@@ -1,0 +1,38 @@
+syntax = "proto3";
+package Protocol;
+
+import "Enum.proto";
+import "Struct.proto";
+
+message C_LOGIN
+{
+
+}
+
+message S_LOGIN
+{
+	bool success = 1;
+	// DB에서 해당 유저와 관련된 정보를 같이 전달, 생성한 플레이어가 여러개일수도
+	repeated Player players = 2; // 아이디 발급 전
+}
+
+message C_ENTER_GAME
+{
+	uint64 playerIndex = 1;
+}
+
+message S_ENTER_GAME
+{
+	bool success = 1;
+}
+
+message C_CHAT
+{
+	string msg = 1;
+}
+
+message S_CHAT
+{
+	uint64 playerId = 1;	// 채팅을 하고 있는 플레이어
+	string msg = 2;
+}

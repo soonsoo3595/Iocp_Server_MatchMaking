@@ -1,0 +1,5 @@
+.vs/
+Binary/
+GameServer/x64/Debug
+GameClient/x64/Debug
+ServerCore/x64/Debug
