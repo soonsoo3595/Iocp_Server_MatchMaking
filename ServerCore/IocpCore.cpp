@@ -42,7 +42,12 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 			return false;
 
 		default:
+			if (iocpEvent == nullptr)
+				return false;
+
 			IocpObjectRef iocpObject = iocpEvent->GetOwner();
+			ASSERT_CRASH(iocpObject != nullptr);
+
 			iocpObject->Dispatch(iocpEvent, numOfBytes);
 			break;
 		}
