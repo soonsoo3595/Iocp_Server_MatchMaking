@@ -2,7 +2,6 @@
 #include "Listener.h"
 #include "SocketUtils.h"
 #include "IocpEvent.h"
-#include "Session.h"
 #include "Service.h"
 
 /*--------------
@@ -31,7 +30,7 @@ bool Listener::StartAccept(ServerServiceRef service)
 	if (_socket == INVALID_SOCKET)
 		return false;
 	
-	if (_service->GetIocpCore()->Register(shared_from_this()) == false)
+	if (_service->Register(shared_from_this()) == false)
 		return false;
 
 	// 주소가 겹쳐서 서버가 안뜨는 문제 해결

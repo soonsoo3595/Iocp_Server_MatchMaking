@@ -1,7 +1,6 @@
 #pragma once
 #include "NetAddress.h"
 #include "IocpCore.h"
-#include "Listener.h"
 #include <functional>
 
 enum class ServiceType : uint8
@@ -14,7 +13,6 @@ enum class ServiceType : uint8
 	Service
 --------------*/
 
-// 세션을 만들어주는 함수
 using SessionFactory = function<SessionRef(void)>;
 
 class Service : public enable_shared_from_this<Service>
@@ -24,22 +22,24 @@ public:
 	virtual ~Service();
 
 	virtual bool		Start() abstract;
-	bool				CanStart() { return _sessionFactory != nullptr; }
-
+	bool				CanStart()								{ return _sessionFactory != nullptr; }
 	virtual void		CloseService();
-	void				SetSessionFactory(SessionFactory func) { _sessionFactory = func; }
 
 	void				Broadcast(SendBufferRef sendBuffer);
+	bool				Dispatch(uint32 timeoutMs = INFINITE)	{ return _iocpCore->Dispatch(timeoutMs); }
+	bool				Register(IocpObjectRef iocpObject)		{ return _iocpCore->Register(iocpObject); }
+
+	void				SetSessionFactory(SessionFactory func)	{ _sessionFactory = func; }
 	SessionRef			CreateSession();
 	void				AddSession(SessionRef session);
 	void				ReleaseSession(SessionRef session);
-	int32				GetCurrentSessionCount() { return _sessionCount; }
-	int32				GetMaxSessionCount() { return _maxSessionCount; }
 
 public:
-	ServiceType			GetServiceType() { return _type; }
-	NetAddress			GetNetAddress() { return _netAddress; }
-	IocpCoreRef&		GetIocpCore() { return _iocpCore; }
+	ServiceType			GetServiceType()			{ return _type; }
+	NetAddress			GetNetAddress()				{ return _netAddress; }
+
+	int32				GetCurrentSessionCount()	{ READ_LOCK; return static_cast<int32>(_sessions.size()); }
+	int32				GetMaxSessionCount()		{ return _maxSessionCount; }
 
 protected:
 	USE_LOCK;
@@ -48,7 +48,6 @@ protected:
 	IocpCoreRef			_iocpCore;
 
 	Set<SessionRef>		_sessions;
-	int32				_sessionCount = 0;
 	int32				_maxSessionCount = 0;
 	SessionFactory		_sessionFactory;
 };
@@ -81,6 +80,5 @@ public:
 	virtual void	CloseService() override;
 
 private:
-	// 서버 역할이니 리스너를 추가해줘야 함
 	ListenerRef		_listener = nullptr;
 };

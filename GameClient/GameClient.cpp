@@ -61,7 +61,7 @@ int main()
 			{
 				while (true)
 				{
-					service->GetIocpCore()->Dispatch();
+					service->Dispatch();
 				}
 			});
 	}
