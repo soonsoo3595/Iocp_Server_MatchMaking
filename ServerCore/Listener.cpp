@@ -52,7 +52,7 @@ bool Listener::StartAccept(ServerServiceRef service)
 	{
 		AcceptEvent* acceptEvent = Xnew<AcceptEvent>();
 		// acceptEvent->owner = shared_ptr<IocpObject>(this); -> X : 헷갈릴만 함
-		acceptEvent->owner = shared_from_this();	// 레퍼런스 카운트를 유지한채로 shared 포인터 생성
+		acceptEvent->SetOwner(shared_from_this());	// 레퍼런스 카운트를 유지한채로 shared 포인터 생성
 		_acceptEvents.push_back(acceptEvent);
 
 		// 운좋게 지금 클라이언트가 접속했으면 바로 완료가 됨
@@ -75,7 +75,7 @@ HANDLE Listener::GetHandle()
 
 void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 {
-	ASSERT_CRASH(iocpEvent->eventType == EventType::Accept);
+	ASSERT_CRASH(iocpEvent->GetEventType() == EventType::Accept);
 	AcceptEvent* acceptEvent = static_cast<AcceptEvent*>(iocpEvent);
 	ProcessAccept(acceptEvent);
 }

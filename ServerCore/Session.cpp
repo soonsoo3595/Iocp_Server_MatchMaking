@@ -63,7 +63,7 @@ HANDLE Session::GetHandle()
 
 void Session::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 {
-	switch (iocpEvent->eventType)
+	switch (iocpEvent->GetEventType())
 	{
 	case EventType::Connect:
 		ProcessConnect();
@@ -98,7 +98,7 @@ bool Session::RegisterConnect()
 		return false;
 
 	_connectEvent.Init();
-	_connectEvent.owner = shared_from_this(); // ADD_REF
+	_connectEvent.SetOwner(shared_from_this()); // ADD_REF
 
 	DWORD numOfBytes = 0;
 	SOCKADDR_IN sockAddr = GetService()->GetNetAddress().GetSockAddr();
@@ -107,7 +107,7 @@ bool Session::RegisterConnect()
 		int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
 		{
-			_connectEvent.owner = nullptr; // RELEASE_REF
+			_connectEvent.SetOwner(nullptr); // RELEASE_REF
 			return false;
 		}
 	}
@@ -118,7 +118,7 @@ bool Session::RegisterConnect()
 bool Session::RegisterDisconnect()
 {
 	_disconnectEvent.Init();
-	_disconnectEvent.owner = shared_from_this(); // ADD_REF
+	_disconnectEvent.SetOwner(shared_from_this()); // ADD_REF
 
 	// flag 매개변수가 중요
 	// 소켓이 다시 재사용될 수 있게 준비를 해준다
@@ -127,7 +127,7 @@ bool Session::RegisterDisconnect()
 		int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
 		{
-			_disconnectEvent.owner = nullptr; // RELEASE_REF
+			_disconnectEvent.SetOwner(nullptr); // RELEASE_REF
 			return false;
 		}
 	}
@@ -142,7 +142,7 @@ void Session::RegisterRecv()
 
 	// 세션마다 이벤트를 하나씩 갖고 있을 것이기에 멤버 변수로
 	_recvEvent.Init();
-	_recvEvent.owner = shared_from_this(); // ADD_REF
+	_recvEvent.SetOwner(shared_from_this()); // ADD_REF
 
 	// 어떤 위치에 최대 크기를 얼마만큼 받을 수 있는지 입력하고 있는데
 	// TCP의 특성상 패킷이 보낸 바이트만큼 온다는 보장이 없음 
@@ -160,7 +160,7 @@ void Session::RegisterRecv()
 		if (errorCode != WSA_IO_PENDING)
 		{
 			HandleError(errorCode);
-			_recvEvent.owner = nullptr; // RELEASE_REF
+			_recvEvent.SetOwner(nullptr); // RELEASE_REF
 		}
 	}
 }
@@ -171,7 +171,7 @@ void Session::RegisterSend()
 		return;
 
 	_sendEvent.Init();
-	_sendEvent.owner = shared_from_this(); // ADD_REF
+	_sendEvent.SetOwner(shared_from_this()); // ADD_REF
 
 	// 보낼 데이터를 sendEvent에 등록
 	{
@@ -209,7 +209,7 @@ void Session::RegisterSend()
 		if (errorCode != WSA_IO_PENDING)
 		{
 			HandleError(errorCode);
-			_sendEvent.owner = nullptr; // RELEASE_REF
+			_sendEvent.SetOwner(nullptr); // RELEASE_REF
 			_sendEvent.sendBuffers.clear(); // RELEASE_REF
 			_sendRegistered.store(false);
 		}
@@ -220,7 +220,7 @@ void Session::RegisterSend()
 // 클라 입장에서 다른 서버로 붙어서 Connection이 완료가 되었을 때도 사용
 void Session::ProcessConnect()
 {
-	_connectEvent.owner = nullptr; // RELEASE_REF
+	_connectEvent.SetOwner(nullptr); // RELEASE_REF
 	_connected.store(true);
 
 	// 세션 등록
@@ -235,7 +235,7 @@ void Session::ProcessConnect()
 
 void Session::ProcessDisconnect()
 {
-	_disconnectEvent.owner = nullptr; // RELEASE_REF
+	_disconnectEvent.SetOwner(nullptr); // RELEASE_REF
 
 	OnDisconnected(); // 컨텐츠 코드에서 오버라이딩
 	GetService()->ReleaseSession(GetSessionRef());
@@ -244,7 +244,7 @@ void Session::ProcessDisconnect()
 // 멀티스레드 환경이어도 이 함수가 중복해서 호출되는 상황은 발생할 수 없음
 void Session::ProcessRecv(int32 numOfBytes)
 {
-	_recvEvent.owner = nullptr; // RELEASE_REF
+	_recvEvent.SetOwner(nullptr); // RELEASE_REF
 
 	// 0바이트를 받은건 끊겼다는거임
 	if (numOfBytes == 0)
@@ -276,7 +276,7 @@ void Session::ProcessRecv(int32 numOfBytes)
 
 void Session::ProcessSend(int32 numOfBytes)
 {
-	_sendEvent.owner = nullptr; // RELEASE_REF
+	_sendEvent.SetOwner(nullptr); // RELEASE_REF
 	_sendEvent.sendBuffers.clear(); // RELEASE_REF
 
 	if (numOfBytes == 0)
