@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 #include "NetAddress.h"
 
 class AcceptEvent;
 class ServerService;
 
 /*--------------
-	Listener (¹®Áö±â)
+	Listener (ë¬¸ì§€ê¸°)
 ---------------*/
 
 class Listener : public IocpObject
@@ -15,22 +15,22 @@ public:
 	~Listener();
 
 public:
-	/* ¿ÜºÎ¿¡¼­ »ç¿ë */
-	bool StartAccept(ServerServiceRef service);	// Accept¸¦ ¹Ş°Ú´Ù!
+	/* ì™¸ë¶€ì—ì„œ ì‚¬ìš© */
+	bool StartAccept(ServerServiceRef service);
 	void CloseSocket();
 
 public:
-	/* ÀÎÅÍÆäÀÌ½º ±¸Çö */
+	/* ì¸í„°í˜ì´ìŠ¤ êµ¬í˜„ */
 	virtual HANDLE GetHandle() override;
 	virtual void Dispatch(class IocpEvent* iocpEvent, int32 numOfBytes = 0) override;
 
 private:
-	/* ¼ö½Å °ü·Ã */
+	/* ìˆ˜ì‹  ê´€ë ¨ */
 	void RegisterAccept(AcceptEvent* acceptEvent);
 	void ProcessAccept(AcceptEvent* acceptEvent);
 
 protected:
-	SOCKET _socket = INVALID_SOCKET;		// ¸®½º³Ê ¼ÒÄÏ
+	SOCKET _socket = INVALID_SOCKET;
 	Vector<AcceptEvent*> _acceptEvents;
-	ServerServiceRef _service;				// ¼øÈ¯ Á¶½É
+	ServerServiceRef _service;				// ìˆœí™˜ ì¡°ì‹¬
 };

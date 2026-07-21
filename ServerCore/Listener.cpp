@@ -1,4 +1,4 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "Listener.h"
 #include "SocketUtils.h"
 #include "IocpEvent.h"
@@ -10,14 +10,15 @@
 
 Listener::~Listener()
 {
-	SocketUtils::Close(_socket);
+	CloseSocket();
 
 	for (AcceptEvent* acceptEvent : _acceptEvents)
 	{
 		// TODO
-
 		Xdelete(acceptEvent);
 	}
+
+	_service = nullptr;
 }
 
 bool Listener::StartAccept(ServerServiceRef service)
@@ -33,7 +34,6 @@ bool Listener::StartAccept(ServerServiceRef service)
 	if (_service->Register(shared_from_this()) == false)
 		return false;
 
-	// ¡÷º“∞° ∞„√ƒº≠ º≠πˆ∞° æ»∂ﬂ¥¬ πÆ¡¶ «ÿ∞·
 	if (SocketUtils::SetReuseAddress(_socket, true) == false)
 		return false;
 
@@ -46,17 +46,21 @@ bool Listener::StartAccept(ServerServiceRef service)
 	if (SocketUtils::Listen(_socket) == false)
 		return false;
 
-	const int32 acceptCount = _service->GetMaxSessionCount();
-	for (int32 i = 0; i < acceptCount; i++)
+	const int32 maxAcceptCount = _service->GetMaxSessionCount();
+	for (int32 i = 0; i < maxAcceptCount; i++)
 	{
 		AcceptEvent* acceptEvent = Xnew<AcceptEvent>();
-		// acceptEvent->owner = shared_ptr<IocpObject>(this); -> X : «Ú∞•∏±∏∏ «‘
-		acceptEvent->SetOwner(shared_from_this());	// ∑π∆€∑±Ω∫ ƒ´øÓ∆Æ∏¶ ¿Ø¡ˆ«—√§∑Œ shared ∆˜¿Œ≈Õ ª˝º∫
-		_acceptEvents.push_back(acceptEvent);
-
-		// øÓ¡¡∞‘ ¡ˆ±› ≈¨∂Û¿Ãæ∆Æ∞° ¡¢º”«ﬂ¿∏∏È πŸ∑Œ øœ∑·∞° µ 
-		// æ∆¥œ∏È ¥©±∫∞° ¡¢º”«œ∏È øœ∑· ≈Î¡ˆ∞° IOCP∏¶ ≈Î«ÿ øˆƒø Ω∫∑πµÂµÈ¿Ã ∞¸¬˚«œ¥Ÿ∞° ≤®≥ªº≠ æµ ∞Õ
-		RegisterAccept(acceptEvent);
+		if (acceptEvent != nullptr)
+		{
+			// TODO : AcceptEventÏùò ownerÎ•º releaseÌïòÎäî ÏßÄÏ†êÏù¥ ÏóÜÏñ¥ÏÑú ListenerÍ∞Ä refcountÏÉÅ
+			// Ï†àÎåÄ ÏÜåÎ©∏ÎêòÏßÄ ÏïäÏùå(SessionÏùò recv/send Ïù¥Î≤§Ìä∏ÏôÄ Îã¨Î¶¨ ProcessAcceptÍ∞Ä ÎÅùÎÇòÎèÑ Í≥ÑÏÜç
+			// Ïû¨ÏÇ¨Ïö©/Ïû¨Îì±Î°ùÎêòÍ∏∞ ÎïåÎ¨∏). Listener Ï¢ÖÎ£å ÌîåÎûòÍ∑∏Î•º ÎëêÍ≥†, Ï¢ÖÎ£å Ï§ëÏùº Îïå
+			// ProcessAccept/RegisterAcceptÏùò Ïû¨ÏãúÎèÑ Î∂ÑÍ∏∞ÏóêÏÑú Ïû¨Îì±Î°ù ÎåÄÏã† SetOwner(nullptr)Î°ú
+			// ÌíÄÏñ¥Ï£ºÎäî Ï≤òÎ¶¨Í∞Ä ÌïÑÏöîÌï®.
+			acceptEvent->SetOwner(shared_from_this());
+			_acceptEvents.push_back(acceptEvent);
+			RegisterAccept(acceptEvent);
+		}
 	}
 
 	return true;
@@ -79,23 +83,24 @@ void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 	ProcessAccept(acceptEvent);
 }
 
-// ∏ÆΩ∫≥ ∞° AcceptEx∏¶ »£√‚«œ¥¬ ∞Õ¿Ã ¿Ã «‘ºˆ¿« «ŸΩ…
 void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 {
-	SessionRef session = _service->CreateSession();		// Register IOCP
+	SessionRef session = _service->CreateSession();
+	if (session == nullptr)
+	{
+		RegisterAccept(acceptEvent);
+		return;
+	}
 
 	acceptEvent->Init();
 	acceptEvent->session = session;
 
 	DWORD bytesReceived = 0;
-	// _recvBuffer¥¬ √≥¿Ω ƒø≥ÿº« Ω√ ¡§∫∏∏¶ πﬁæ∆¡÷±‚ ¿ß«— πˆ∆€
-	// ±◊ µ⁄ ¿Œ¿⁄¥¬ ∞¯Ωƒ πÆº≠ ±◊¥Î∑Œ µ˚∂Û«— ∞Õ -> ≈´ ¿«πÃ X
 	if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer.WritePos(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
 	{
 		const int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
 		{
-			// Pending¿Ã æ∆¥œ∏È ¿œ¥‹ ¥ŸΩ√ Accept ∞…æÓ¡ÿ¥Ÿ
 			RegisterAccept(acceptEvent);
 		}
 	}
@@ -111,7 +116,6 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 		return;
 	}
 
-	// ¡¢º”«— º“ƒœ¿« ¡§∫∏ √ﬂ√‚
 	SOCKADDR_IN sockAddress;
 	int32 sizeOfSockAddr = sizeof(sockAddress);
 	if (SOCKET_ERROR == ::getpeername(session->GetSocket(), OUT reinterpret_cast<SOCKADDR*>(&sockAddress), &sizeOfSockAddr))
@@ -127,6 +131,5 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 
 	// TODO
 
-	// ¥Ÿ¿Ω ø‰√ª¿ª ±‚¥Ÿ∏≤
 	RegisterAccept(acceptEvent);
 }
