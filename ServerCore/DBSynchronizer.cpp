@@ -384,7 +384,7 @@ void DBSynchronizer::CompareDBModel()
 		{
 			if (_xmlRemovedTables.find(dbTable->_name) != _xmlRemovedTables.end())
 			{
-				GConsoleLogger->WriteStdOut(Color::YELLOW, L"Removing Table : [dbo].[%s]\n", dbTable->_name.c_str());
+				LOG_WARNING(L"Removing Table : [dbo].[%s]", dbTable->_name.c_str());
 				_updateQueries[UpdateStep::DropTable].push_back(DBModel::Helpers::Format(L"DROP TABLE [dbo].[%s]", dbTable->_name.c_str()));
 			}
 		}
@@ -405,7 +405,7 @@ void DBSynchronizer::CompareDBModel()
 			columnsStr += xmlTable->_columns[i]->CreateText();
 		}
 
-		GConsoleLogger->WriteStdOut(Color::YELLOW, L"Creating Table : [dbo].[%s]\n", xmlTable->_name.c_str());
+		LOG_WARNING(L"Creating Table : [dbo].[%s]", xmlTable->_name.c_str());
 		_updateQueries[UpdateStep::CreateTable].push_back(DBModel::Helpers::Format(L"CREATE TABLE [dbo].[%s] (%s)", xmlTable->_name.c_str(), columnsStr.c_str()));
 
 		for (DBModel::ColumnRef& xmlColumn : xmlTable->_columns)
@@ -422,7 +422,7 @@ void DBSynchronizer::CompareDBModel()
 
 		for (DBModel::IndexRef& xmlIndex : xmlTable->_indexes)
 		{
-			GConsoleLogger->WriteStdOut(Color::YELLOW, L"Creating Index : [%s] %s %s [%s]\n", xmlTable->_name.c_str(), xmlIndex->GetKeyText().c_str(), xmlIndex->GetTypeText().c_str(), xmlIndex->GetUniqueName().c_str());
+			LOG_WARNING(L"Creating Index : [%s] %s %s [%s]", xmlTable->_name.c_str(), xmlIndex->GetKeyText().c_str(), xmlIndex->GetTypeText().c_str(), xmlIndex->GetUniqueName().c_str());
 			if (xmlIndex->_primaryKey || xmlIndex->_uniqueConstraint)
 			{
 				_updateQueries[UpdateStep::CreateIndex].push_back(DBModel::Helpers::Format(
@@ -479,7 +479,7 @@ void DBSynchronizer::CompareTables(DBModel::TableRef dbTable, DBModel::TableRef 
 		}
 		else
 		{
-			GConsoleLogger->WriteStdOut(Color::YELLOW, L"Dropping Column : [%s].[%s]\n", dbTable->_name.c_str(), dbColumn->_name.c_str());
+			LOG_WARNING(L"Dropping Column : [%s].[%s]", dbTable->_name.c_str(), dbColumn->_name.c_str());
 			if (dbColumn->_defaultConstraintName.empty() == false)
 				_updateQueries[UpdateStep::DropColumn].push_back(DBModel::Helpers::Format(L"ALTER TABLE [dbo].[%s] DROP CONSTRAINT [%s]", dbTable->_name.c_str(), dbColumn->_defaultConstraintName.c_str()));
 
@@ -494,7 +494,7 @@ void DBSynchronizer::CompareTables(DBModel::TableRef dbTable, DBModel::TableRef 
 		DBModel::Column newColumn = *xmlColumn;
 		newColumn._nullable = true;
 
-		GConsoleLogger->WriteStdOut(Color::YELLOW, L"Adding Column : [%s].[%s]\n", dbTable->_name.c_str(), xmlColumn->_name.c_str());
+		LOG_WARNING(L"Adding Column : [%s].[%s]", dbTable->_name.c_str(), xmlColumn->_name.c_str());
 		_updateQueries[UpdateStep::AddColumn].push_back(DBModel::Helpers::Format(L"ALTER TABLE [dbo].[%s] ADD %s %s",
 			dbTable->_name.c_str(), xmlColumn->_name.c_str(), xmlColumn->_typeText.c_str()));
 
@@ -533,7 +533,7 @@ void DBSynchronizer::CompareTables(DBModel::TableRef dbTable, DBModel::TableRef 
 		}
 		else
 		{
-			GConsoleLogger->WriteStdOut(Color::YELLOW, L"Dropping Index : [%s] [%s] %s %s\n", dbTable->_name.c_str(), dbIndex->_name.c_str(), dbIndex->GetKeyText().c_str(), dbIndex->GetTypeText().c_str());
+			LOG_WARNING(L"Dropping Index : [%s] [%s] %s %s", dbTable->_name.c_str(), dbIndex->_name.c_str(), dbIndex->GetKeyText().c_str(), dbIndex->GetTypeText().c_str());
 			if (dbIndex->_primaryKey || dbIndex->_uniqueConstraint)
 				_updateQueries[UpdateStep::DropIndex].push_back(DBModel::Helpers::Format(L"ALTER TABLE [dbo].[%s] DROP CONSTRAINT [%s]", dbTable->_name.c_str(), dbIndex->_name.c_str()));
 			else
@@ -545,7 +545,7 @@ void DBSynchronizer::CompareTables(DBModel::TableRef dbTable, DBModel::TableRef 
 	for (auto& mapIt : xmlIndexMap)
 	{
 		DBModel::IndexRef xmlIndex = mapIt.second;
-		GConsoleLogger->WriteStdOut(Color::YELLOW, L"Creating Index : [%s] %s %s [%s]\n", dbTable->_name.c_str(), xmlIndex->GetKeyText().c_str(), xmlIndex->GetTypeText().c_str(), xmlIndex->GetUniqueName().c_str());
+		LOG_WARNING(L"Creating Index : [%s] %s %s [%s]", dbTable->_name.c_str(), xmlIndex->GetKeyText().c_str(), xmlIndex->GetTypeText().c_str(), xmlIndex->GetUniqueName().c_str());
 		if (xmlIndex->_primaryKey || xmlIndex->_uniqueConstraint)
 		{
 			_updateQueries[UpdateStep::CreateIndex].push_back(DBModel::Helpers::Format(L"ALTER TABLE [dbo].[%s] ADD CONSTRAINT [%s] %s %s (%s)",
@@ -576,7 +576,7 @@ void DBSynchronizer::CompareColumns(DBModel::TableRef dbTable, DBModel::ColumnRe
 
 	if (flag)
 	{
-		GConsoleLogger->WriteStdOut(Color::YELLOW, L"Updating Column [%s] : (%s) -> (%s)\n", dbTable->_name.c_str(), dbColumn->CreateText().c_str(), xmlColumn->CreateText().c_str());
+		LOG_WARNING(L"Updating Column [%s] : (%s) -> (%s)", dbTable->_name.c_str(), dbColumn->CreateText().c_str(), xmlColumn->CreateText().c_str());
 	}
 
 	// 연관된 인덱스가 있으면 나중에 삭제하기 위해 기록한다.
@@ -665,7 +665,7 @@ void DBSynchronizer::CompareStoredProcedures()
 			String xmlBody = xmlProcedure->GenerateCreateQuery();
 			if (DBModel::Helpers::RemoveWhiteSpace(dbProcedure->_fullBody) != DBModel::Helpers::RemoveWhiteSpace(xmlBody))
 			{
-				GConsoleLogger->WriteStdOut(Color::YELLOW, L"Updating Procedure : %s\n", dbProcedure->_name.c_str());
+				LOG_WARNING(L"Updating Procedure : %s", dbProcedure->_name.c_str());
 				_updateQueries[UpdateStep::StoredProcecure].push_back(xmlProcedure->GenerateAlterQuery());
 			}
 			xmlProceduresMap.erase(findProcedure);
@@ -675,7 +675,7 @@ void DBSynchronizer::CompareStoredProcedures()
 	// 맵에서 제거되지 않은 XML 프로시저 정의는 새로 추가.
 	for (auto& mapIt : xmlProceduresMap)
 	{
-		GConsoleLogger->WriteStdOut(Color::YELLOW, L"Updating Procedure : %s\n", mapIt.first.c_str());
+		LOG_WARNING(L"Updating Procedure : %s", mapIt.first.c_str());
 		_updateQueries[UpdateStep::StoredProcecure].push_back(mapIt.second->GenerateCreateQuery());
 	}
 }

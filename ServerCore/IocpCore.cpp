@@ -9,6 +9,11 @@
 IocpCore::IocpCore()
 {
 	_iocpHandle = ::CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, 0);
+	if (_iocpHandle == INVALID_HANDLE_VALUE)
+		LOG_FATAL(L"IocpCore::IocpCore CreateIoCompletionPort failed. errCode=%u", ::GetLastError());
+	else
+		LOG_INFO(L"IocpCore::IocpCore IOCP handle created. handle=0x%p", _iocpHandle);
+
 	ASSERT_CRASH(_iocpHandle != INVALID_HANDLE_VALUE);
 }
 
@@ -19,7 +24,14 @@ IocpCore::~IocpCore()
 
 bool IocpCore::Register(IocpObjectRef iocpObject)
 {
-	return ::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, 0, 0);
+	if (::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, 0, 0) == nullptr)
+	{
+		LOG_ERROR(L"IocpCore::Register failed. errCode=%u", ::GetLastError());
+		return false;
+	}
+
+	LOG_VERBOSE(L"IocpCore::Register succeeded. objectHandle=0x%p", iocpObject->GetHandle());
+	return true;
 }
 
 bool IocpCore::Dispatch(uint32 timeoutMs)
@@ -43,11 +55,15 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 
 		default:
 			if (iocpEvent == nullptr)
+			{
+				LOG_ERROR(L"IocpCore::Dispatch GQCS failed with null event. errCode=%d", errCode);
 				return false;
+			}
 
 			IocpObjectRef iocpObject = iocpEvent->GetOwner();
 			ASSERT_CRASH(iocpObject != nullptr);
 
+			LOG_WARNING(L"IocpCore::Dispatch GQCS failed. errCode=%d", errCode);
 			iocpObject->Dispatch(iocpEvent, numOfBytes);
 			break;
 		}

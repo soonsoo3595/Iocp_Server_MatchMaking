@@ -38,8 +38,12 @@ SessionRef Service::CreateSession()
 	session->SetService(shared_from_this());
 
 	if (_iocpCore->Register(session) == false)
+	{
+		LOG_ERROR(L"Service::CreateSession failed to register session to IOCP");
 		return nullptr;
+	}
 
+	LOG_VERBOSE(L"Service::CreateSession session created");
 	return session;
 }
 
@@ -47,12 +51,14 @@ void Service::AddSession(SessionRef session)
 {
 	WRITE_LOCK;
 	_sessions.insert(session);
+	LOG_VERBOSE(L"Service::AddSession session count=%d/%d", static_cast<int32>(_sessions.size()), _maxSessionCount);
 }
 
 void Service::ReleaseSession(SessionRef session)
 {
 	WRITE_LOCK;
 	ASSERT_CRASH(_sessions.erase(session) != 0);
+	LOG_VERBOSE(L"Service::ReleaseSession session count=%d/%d", static_cast<int32>(_sessions.size()), _maxSessionCount);
 }
 
 /*-----------------
@@ -76,9 +82,13 @@ bool ClientService::Start()
 
 		// TODO : 세션 연결(Connect)에 실패했을 때 이전에 만든 세션들을 롤백/정리할지 결정 필요
 		if (session != nullptr && session->Connect() == false)
+		{
+			LOG_ERROR(L"ClientService::Start session Connect failed");
 			return false;
+		}
 	}
 
+	LOG_INFO(L"ClientService::Start succeeded. sessionCount=%d", maxSessionCount);
 	return true;
 }
 
@@ -94,12 +104,19 @@ bool ServerService::Start()
 
 	_listener = MakeShared<Listener>();
 	if (_listener == nullptr)
+	{
+		LOG_ERROR(L"ServerService::Start failed to create Listener");
 		return false;
+	}
 
 	ServerServiceRef service = static_pointer_cast<ServerService>(shared_from_this());
 	if (_listener->StartAccept(service) == false)
+	{
+		LOG_ERROR(L"ServerService::Start Listener StartAccept failed");
 		return false;
+	}
 
+	LOG_INFO(L"ServerService::Start succeeded");
 	return true;
 }
 

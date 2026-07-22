@@ -223,6 +223,10 @@ void Session::ProcessConnect()
 	_connectEvent.SetOwner(nullptr); // RELEASE_REF
 	_connected.store(true);
 
+	// 클라이언트 입장에서 서버로 접속에 성공한 시점 (서버 입장의 accept 로그는 Listener::ProcessAccept에서 남김)
+	if (GetService()->GetServiceType() == ServiceType::Client)
+		LOG_INFO(L"Connected to server. %s:%d", GetService()->GetNetAddress().GetIpAddress().c_str(), GetService()->GetNetAddress().GetPort());
+
 	// 세션 등록
 	GetService()->AddSession(GetSessionRef());
 

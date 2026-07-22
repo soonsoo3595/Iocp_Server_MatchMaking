@@ -41,11 +41,8 @@ void DoWorkerJob(ServerServiceRef& service)
 
 int main()
 {
-	ASSERT_CRASH(GDBConnectionPool->Connect(1, L"Driver={SQL Server Native Client 11.0};Server=(localdb)\\MSSQLLocalDB;Database=IocpGameDb;Trusted_Connection=Yes;"));
-
-	DBConnection* dbConn = GDBConnectionPool->Pop();
-	DBSynchronizer dbSync(*dbConn);
-	dbSync.Synchronize(L"GameDB.xml");
+	// 콘솔 + 파일 동시 출력, Log 레벨 이상만 기록
+	GLogger->Init(LogOutput::Both, LogLevel::Log);
 
 	ClientPacketHandler::Init();
 
