@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "IocpCore.h"
 #include "IocpEvent.h"
 #include "NetAddress.h"
@@ -13,8 +13,6 @@ class Service;
 class Session : public IocpObject
 {
 	friend class Listener;
-	friend class IocpCore;
-	friend class Service;
 
 	enum
 	{
@@ -30,11 +28,14 @@ public:
 	bool				Connect();
 	void				Disconnect(const WCHAR* cause);
 
+	// TODO : Serviceê°€ Sessionë³´ë‹¤ ë¨¼ì € ì†Œë©¸ë˜ëŠ” ì‹œë‚˜ë¦¬ì˜¤(ì˜ˆ: ì •ìƒ ì¢…ë£Œ ì¤‘ ë’¤ëŠ¦ì€ ì™„ë£Œ í†µì§€)ì—ì„œ
+	// GetService()ê°€ nullptrì„ ë°˜í™˜í•  ìˆ˜ ìˆëŠ”ë°, RegisterConnect/ProcessConnect/ProcessDisconnect
+	// ë“± í˜¸ì¶œë¶€ê°€ ì´ë¥¼ ì²´í¬í•˜ì§€ ì•ŠìŒ -> í…ŒìŠ¤íŠ¸ë¡œ ì¬í˜„ í›„ ë°©ì–´ í•„ìš”
 	shared_ptr<Service>	GetService() { return _service.lock(); }
 	void				SetService(shared_ptr<Service> service) { _service = service; }
 
 public:
-	/* Á¤º¸ °ü·Ã */
+	/* ì •ë³´ ê´€ë ¨ */
 	void				SetNetAddress(NetAddress address) { _netAddress = address; }
 	NetAddress			GetAddress() { return _netAddress; }
 	SOCKET				GetSocket() { return _socket; }
@@ -42,12 +43,12 @@ public:
 	SessionRef			GetSessionRef() { return static_pointer_cast<Session>(shared_from_this()); }
 
 private:
-	/* ÀÎÅÍÆäÀÌ½º ±¸Çö */
+	/* ì¸í„°í˜ì´ìŠ¤ êµ¬í˜„ */
 	virtual HANDLE		GetHandle() override;
 	virtual void		Dispatch(class IocpEvent* iocpEvent, int32 numOfBytes = 0) override;
 
 private:
-	/* Àü¼Û °ü·Ã */
+	/* ì „ì†¡ ê´€ë ¨ */
 	bool				RegisterConnect();
 	bool				RegisterDisconnect();
 	void				RegisterRecv();
@@ -61,37 +62,31 @@ private:
 	void				HandleError(int32 errorCode);
 
 protected:
-	/* ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ¿À¹ö¶óÀÌµù */
+	/* ì»¨í…ì¸  ì½”ë“œì—ì„œ ì˜¤ë²„ë¼ì´ë”© */
 	virtual void		OnConnected() {}
 	virtual int32		OnRecv(BYTE* buffer, int32 len) { return len; }
 	virtual void		OnSend(int32 len) {}
 	virtual void		OnDisconnected() {}
 
-public:
-	// ÀÌ·¸°Ô »ıÀ¸·Î ¸®½Ãºê ¹öÆÛ¸¦ »ç¿ëÇÏ´Â°Ç ¹®Á¦°¡ ÀÖ´Ù!
-	// BYTE _recvBuffer[1000];
-
 private:
-	// ³»ºÎÀûÀ¸·Î ¼­ºñ½º¸¦ ¾Ë¾Æ¾ß ¼­ºñ½º¿¡ ÀÚ½ÅÀ» µî·ÏÇÏ°Å³ª ²÷À» ¼ö ÀÖÀ» °ÍÀÓ
 	weak_ptr<Service>	_service;
 	SOCKET				_socket = INVALID_SOCKET;
 	NetAddress			_netAddress = {};
 	Atomic<bool>		_connected = false;
 
 private:
-	// ¸ÖÆ¼½º·¹µå È¯°æ
+	// ë©€í‹°ìŠ¤ë ˆë“œ í™˜ê²½
 	USE_LOCK;
 
-	/* ¼ö½Å °ü·Ã */
+	/* ìˆ˜ì‹  ê´€ë ¨ */
 	RecvBuffer			_recvBuffer;
 
-	/* ¼Û½Å °ü·Ã */
-	// RegisterSend°¡ ½ÇÇàÁßÀÌ¶ó ´çÀå WSASend¸¦ ÇÒ ¼ö ¾øÀ¸¸é Å¥¿¡ ³Ö°í ºüÁ®³ª¿À°Ô ÇÒ °Í
+	/* ì†¡ì‹  ê´€ë ¨ */
 	Queue<SendBufferRef>	_sendQueue;
 	Atomic<bool>			_sendRegistered = false;
 
 private:
-	/* IocpEvent Àç»ç¿ë */
+	/* IocpEvent ì¬ì‚¬ìš© */
 	ConnectEvent		_connectEvent;
 	DisconnectEvent		_disconnectEvent;
 	RecvEvent			_recvEvent;
@@ -101,14 +96,14 @@ private:
 /*-----------------
 	PacketSession
 
-	ÆĞÅ¶ Çì´õ ¸ÕÀú ÆÄ½Ì ÈÄ size¸¦ ÃßÃâÇØ¼­ Áö±İ±îÁö ¹ŞÀº µ¥ÀÌÅÍ°¡ ÃÖ¼ÒÇÑ ÀÌ sizeº¸´Ù Å« Áö È®ÀÎ
-	ÀÛ´Ù¸é ¾ÆÁ÷ µ¥ÀÌÅÍ ´ú ¹Ş¾Ò´Ù´Â ¾ê±â´Ï±î
+	íŒ¨í‚· í—¤ë” ë¨¼ì € íŒŒì‹± í›„ sizeë¥¼ ì¶”ì¶œí•´ì„œ ì§€ê¸ˆê¹Œì§€ ë°›ì€ ë°ì´í„°ê°€ ìµœì†Œí•œ ì´ sizeë³´ë‹¤ í° ì§€ í™•ì¸
+	ì‘ë‹¤ë©´ ì•„ì§ ë°ì´í„° ëœ ë°›ì•˜ë‹¤ëŠ” ì–˜ê¸°ë‹ˆê¹Œ
 ------------------*/
 
 struct PacketHeader
 {
-	uint16 size;		// °¡º¯ÀûÀÎ µ¥ÀÌÅÍ
-	uint16 id;			// ÇÁ·ÎÅäÄİID (ex. 1=·Î±×ÀÎ, 2=ÀÌµ¿¿äÃ»)
+	uint16 size;		// ê°€ë³€ì ì¸ ë°ì´í„°
+	uint16 id;			// í”„ë¡œí† ì½œID (ex. 1=ë¡œê·¸ì¸, 2=ì´ë™ìš”ì²­)
 };
 
 class PacketSession : public Session
