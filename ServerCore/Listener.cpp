@@ -39,7 +39,6 @@ bool Listener::StartAccept(ServerServiceRef service)
 		LOG_ERROR(L"Listener::StartAccept Register to IOCP failed");
 		return false;
 	}
-	LOG_VERBOSE(L"Listener::StartAccept listener socket registered to IOCP");
 
 	if (SocketUtils::SetReuseAddress(_socket, true) == false)
 	{
@@ -65,7 +64,7 @@ bool Listener::StartAccept(ServerServiceRef service)
 		return false;
 	}
 
-	LOG_INFO(L"Listener::StartAccept listening on %s:%d", _service->GetNetAddress().GetIpAddress().c_str(), _service->GetNetAddress().GetPort());
+	LOG_INFO(L"Listener Socket listening on %s:%d", _service->GetNetAddress().GetIpAddress().c_str(), _service->GetNetAddress().GetPort());
 
 	const int32 maxAcceptCount = _service->GetMaxSessionCount();
 	for (int32 i = 0; i < maxAcceptCount; i++)
@@ -82,9 +81,13 @@ bool Listener::StartAccept(ServerServiceRef service)
 			_acceptEvents.push_back(acceptEvent);
 			RegisterAccept(acceptEvent);
 		}
+		else
+		{
+			LOG_ERROR(L"Failed to Xnew acceptEvent");
+		}
 	}
 
-	LOG_INFO(L"Listener::StartAccept posted %d AcceptEx", maxAcceptCount);
+	LOG_INFO(L"Listener::StartAccept posted %d AcceptEx", _acceptEvents.size());
 
 	return true;
 }

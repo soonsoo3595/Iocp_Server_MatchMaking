@@ -20,6 +20,7 @@ C++ IOCP 강의를 통해 만든 서버 엔진(`ServerCore`)을 기반으로, �
 - 패킷 핸들러: `PacketGenerator`(Python+Jinja2)가 `.proto`를 읽어 `ClientPacketHandler`/`ServerPacketHandler` 자동 생성
 - DB: ODBC + MSSQL LocalDB (`DBConnection`/`DBConnectionPool`), 연결 문자열의 DB명은 `IocpGameDb` (강의 레포의 `ServerDb`와 분리)
 - 자체 ORM: `GameDB.xml`에 원하는 스키마/프로시저를 선언하면 `DBSynchronizer`가 실제 DB(`sys.columns`/`sys.tables`/`sys.indexes`/`sys.procedures`)와 비교해서 마이그레이션 쿼리를 생성/실행. `ProcedureGenerator`가 `<Procedure>`를 읽어 `SP::XXX`(`DBBind` 파생) 클래스를 자동 생성
+- 로깅: `ServerCore/Logger.h/.cpp`의 `GLogger` 전역(구 `ConsoleLog` 대체). 콘솔/파일 선택, 스레드 세이프(TLS 버퍼), 로그 레벨(`Verbose`~`Fatal`, `Verbose`/`Log`는 Release 빌드에서 컴파일 자체가 빠짐), 타임스탬프·호출 함수명(`__FUNCTION__`) 자동 기록. `GameServer`/`GameClient`는 별개 프로세스라 각자 `main()`에서 `GLogger->Init()` 호출 필요. 에러 경로뿐 아니라 IOCP 등록/접속/세션 증감 같은 핵심 로직에도 로그를 계속 추가해나가는 중
 
 ## 시작 상태
 `GameDB.xml`은 빈 스키마(`<GameDB></GameDB>`)로 시작한다. 테이블/프로시저를 추가하려면 XML에 `<Table>`/`<Procedure>`를 선언하고 빌드하면 `DBSynchronizer`와 `ProcedureGenerator`가 자동으로 DB 스키마 동기화 + `SP::` 코드 생성을 처리한다.

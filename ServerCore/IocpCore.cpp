@@ -30,7 +30,7 @@ bool IocpCore::Register(IocpObjectRef iocpObject)
 		return false;
 	}
 
-	LOG_VERBOSE(L"IocpCore::Register succeeded. objectHandle=0x%p", iocpObject->GetHandle());
+	LOG_VERBOSE(L"%hs Register succeeded, handle=0x%p", typeid(*iocpObject).name(), iocpObject->GetHandle());
 	return true;
 }
 

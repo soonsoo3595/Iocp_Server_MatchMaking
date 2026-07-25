@@ -41,8 +41,7 @@ void DoWorkerJob(ServerServiceRef& service)
 
 int main()
 {
-	// 콘솔 + 파일 동시 출력, Log 레벨 이상만 기록
-	GLogger->Init(LogOutput::Both, LogLevel::Log);
+	GLogger->Init(LogOutput::Console, LogLevel::Verbose);
 
 	ClientPacketHandler::Init();
 

@@ -88,7 +88,7 @@ bool ClientService::Start()
 		}
 	}
 
-	LOG_INFO(L"ClientService::Start succeeded. sessionCount=%d", maxSessionCount);
+	LOG_INFO(L"ClientService::Start succeeded. sessionCount = %d", maxSessionCount);
 	return true;
 }
 

@@ -43,6 +43,8 @@ public:
 
 int main()
 {
+	GLogger->Init(LogOutput::Console, LogLevel::Verbose);
+
 	ServerPacketHandler::Init();
 
 	this_thread::sleep_for(1s);
