@@ -33,4 +33,5 @@ protected:
 	SOCKET _socket = INVALID_SOCKET;
 	Vector<AcceptEvent*> _acceptEvents;
 	ServerServiceRef _service;				// 순환 조심
+	Atomic<bool> _closing = false;
 };

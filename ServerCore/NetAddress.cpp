@@ -19,8 +19,6 @@ NetAddress::NetAddress(wstring ip, uint16 port)
 
 wstring NetAddress::GetIpAddress()
 {
-	// sizeof(buffer)를 사용하면 WCHAR이 2바이트다 보니까 200으로 나올 수 있음
-	// sizeof(buffer) / sizeof(WCHAR) -> len 매크로
 	WCHAR buffer[100];
 	::InetNtopW(AF_INET, &_sockAddr.sin_addr, buffer, len32(buffer));
 	return wstring(buffer);

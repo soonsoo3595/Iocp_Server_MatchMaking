@@ -72,11 +72,6 @@ bool Listener::StartAccept(ServerServiceRef service)
 		AcceptEvent* acceptEvent = Xnew<AcceptEvent>();
 		if (acceptEvent != nullptr)
 		{
-			// TODO : AcceptEvent의 owner를 release하는 지점이 없어서 Listener가 refcount상
-			// 절대 소멸되지 않음(Session의 recv/send 이벤트와 달리 ProcessAccept가 끝나도 계속
-			// 재사용/재등록되기 때문). Listener 종료 플래그를 두고, 종료 중일 때
-			// ProcessAccept/RegisterAccept의 재시도 분기에서 재등록 대신 SetOwner(nullptr)로
-			// 풀어주는 처리가 필요함.
 			acceptEvent->SetOwner(shared_from_this());
 			_acceptEvents.push_back(acceptEvent);
 			RegisterAccept(acceptEvent);
@@ -94,6 +89,7 @@ bool Listener::StartAccept(ServerServiceRef service)
 
 void Listener::CloseSocket()
 {
+	_closing = true;
 	SocketUtils::Close(_socket);
 }
 
@@ -111,6 +107,12 @@ void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 {
+	if (_closing)
+	{
+		acceptEvent->SetOwner(nullptr); // RELEASE_REF
+		return;
+	}
+
 	SessionRef session = _service->CreateSession();
 	if (session == nullptr)
 	{

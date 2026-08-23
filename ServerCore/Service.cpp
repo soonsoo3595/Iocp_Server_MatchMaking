@@ -112,7 +112,6 @@ bool ServerService::Start()
 	ServerServiceRef service = static_pointer_cast<ServerService>(shared_from_this());
 	if (_listener->StartAccept(service) == false)
 	{
-		LOG_ERROR(L"ServerService::Start Listener StartAccept failed");
 		return false;
 	}
 
