@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Types.h"
 
 /*----------------
@@ -6,8 +6,8 @@
 -----------------*/
 
 /*--------------------------------------------
-[WWWWWWWW][WWWWWWWW][RRRRRRRR][RRRRRRRR] -> 32ºñÆ®
-W : WriteFlag (Exclusive Lock Owner ThreadId) : ¶ôÀ» È¹µæÇÏ°í ÀÖ´Â ½º·¹µåÀÇ id
+[WWWWWWWW][WWWWWWWW][RRRRRRRR][RRRRRRRR] -> 32ë¹„íŠ¸
+W : WriteFlag (Exclusive Lock Owner ThreadId) : ë½ì„ íšë“í•˜ê³  ìžˆëŠ” ìŠ¤ë ˆë“œì˜ id
 R : ReadFlag (Shared Lock Count)
 ---------------------------------------------*/
 
@@ -17,11 +17,11 @@ class Lock
 {
     enum : uint32
     {
-        ACQUIRE_TIMEOUT_TICK = 10000,       // ÃÖ´ë·Î ±â´Ù·ÁÁÙ Æ½
-        MAX_SPIN_COUNT = 5000,              // ½ºÇÉ Ä«¿îÆ®¸¦ ¸î ¹ø µ¹ °ÍÀÎ°¡
-        WRITE_THREAD_MASK = 0xFFFF'0000,    // ºñÆ® ÇÃ·¡±× ¹æ½Ä : »óÀ§ 16ºñÆ® ÃßÃâ
-        READ_COUNT_MASK = 0x0000'FFFF,      // ºñÆ® ÇÃ·¡±× ¹æ½Ä : ÇÏÀ§ 16ºñÆ® ÃßÃâ
-        EMPTY_FLAG = 0x0000'0000            // ÃÊ¹Ý »óÅÂ
+        ACQUIRE_TIMEOUT_TICK = 10000,       // ìµœëŒ€ë¡œ ê¸°ë‹¤ë ¤ì¤„ í‹±
+        MAX_SPIN_COUNT = 5000,              // ìŠ¤í•€ ì¹´ìš´íŠ¸ë¥¼ ëª‡ ë²ˆ ëŒ ê²ƒì¸ê°€
+        WRITE_THREAD_MASK = 0xFFFF'0000,    // ë¹„íŠ¸ í”Œëž˜ê·¸ ë°©ì‹ : ìƒìœ„ 16ë¹„íŠ¸ ì¶”ì¶œ
+        READ_COUNT_MASK = 0x0000'FFFF,      // ë¹„íŠ¸ í”Œëž˜ê·¸ ë°©ì‹ : í•˜ìœ„ 16ë¹„íŠ¸ ì¶”ì¶œ
+        EMPTY_FLAG = 0x0000'0000            // ì´ˆë°˜ ìƒíƒœ
     };
 
 public:
@@ -32,7 +32,7 @@ public:
 
 private:
     Atomic<uint32> _lockFlag = EMPTY_FLAG;
-    uint16 _writeCount = 0;     // ¶ôÀ» ÀâÀº ¾Ö¸¸ »ç¿ëÇÏ±âÇØ °æÇÕÀÌ ¹ß»ýÇÏÁö ¾ÊÀ½
+    uint16 _writeCount = 0;     // ë½ì„ ìž¡ì€ ì• ë§Œ ì‚¬ìš©í•˜ê¸°í•´ ê²½í•©ì´ ë°œìƒí•˜ì§€ ì•ŠìŒ
 };
 
 /*----------------

@@ -8,8 +8,6 @@
 void DeadLockProfiler::PushLock(const char* name)
 {
 	LockGuard guard(_lock);
-
-	// 아이디를 찾거나 발급한다.
 	int32 lockId = 0;
 
 	auto findIt = _nameToId.find(name);
@@ -21,13 +19,9 @@ void DeadLockProfiler::PushLock(const char* name)
 	}
 	else
 	{
-		// 이미 찾은적이 있다면
 		lockId = findIt->second;
 	}
 
-	// 잡고 있는 락이 있었다면
-	// 락 스택같은 경우 스레드마다 지금 잡고 있는 락이 다르기에 스레드마다 고유하게 갖고 있어야 함
-	// 그래서 이 부분은 추후에 수정이 필요함
 	if (LLockStack.empty() == false)
 	{
 		// 기존에 발견되지 않은 케이스라면 데드락 여부 다시 확인한다.
@@ -125,6 +119,7 @@ void DeadLockProfiler::Dfs(int32 here)
 					break;
 			}
 
+			LOG_FATAL(L"Deadlock detected. see console output for the lock cycle");
 			CRASH("DEADLOCK_DETECTED");
 		}
 	}
