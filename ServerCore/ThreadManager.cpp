@@ -10,7 +10,6 @@
 
 ThreadManager::ThreadManager()
 {
-	// Main Thread도 TLS를 사용하긴 하니까 초기화
 	InitTLS();
 }
 
@@ -29,7 +28,9 @@ void ThreadManager::Launch(function<void(void)> callback)
 	_threads.push_back(thread([=]()
 		{
 			InitTLS();
+			LOG_INFO(L"Thread launched. threadId=%d", LThreadId);
 			callback();
+			LOG_INFO(L"Thread finished. threadId=%d", LThreadId);
 			DestroyTLS();
 		}));
 }
