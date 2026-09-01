@@ -186,7 +186,6 @@
     <ClInclude Include="rapidxml_print.hpp" />
     <ClInclude Include="rapidxml_utils.hpp" />
     <ClInclude Include="RecvBuffer.h" />
-    <ClInclude Include="RefCounting.h" />
     <ClInclude Include="SendBuffer.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="Session.h" />
@@ -230,7 +229,6 @@
     </ClCompile>
     <ClCompile Include="CorePch.cpp" />
     <ClCompile Include="RecvBuffer.cpp" />
-    <ClCompile Include="RefCounting.cpp" />
     <ClCompile Include="SendBuffer.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="Session.cpp" />
