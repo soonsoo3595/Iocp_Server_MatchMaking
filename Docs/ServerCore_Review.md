@@ -129,6 +129,8 @@ Send(buffer) 호출 스레드가 여럿이어도:
 - **RecvBuffer / SendBuffer**: 별도 문서로 정리함 → [Buffer_Review.md](Buffer_Review.md)
 - **SocketUtils**: 별도 문서로 정리함 → [SocketUtils_Review.md](SocketUtils_Review.md)
 - **Lock / DeadLockProfiler**: 별도 문서로 정리함 → [Lock_Review.md](Lock_Review.md)
-- **JobQueue**: `Room`/`GameSession`이 락 없이 안전하게 로직을 처리하는 "DoAsync" 패턴이 이 위에서 돈다. 지금까지 본 IOCP 완료 통지 구조와 자연스럽게 이어짐.
-- **Memory/ObjectPool/PoolAllocator**: `Xnew`/`MakeShared`가 실제로 메모리를 어떻게 재사용하는지.
+- **Job/JobQueue/GlobalQueue/JobTimer**: 별도 문서로 정리함 → [JobQueue_Review.md](JobQueue_Review.md)
+- **Memory/ObjectPool/PoolAllocator**: 별도 문서로 정리함 → [Memory_Review.md](Memory_Review.md)
+- **Protobuf / 패킷 파이프라인**: 별도 문서로 정리함 → [Protobuf_Review.md](Protobuf_Review.md)
+- **패킷 수신 흐름 상세(도착~파싱~디스패치)**: 별도 문서로 정리함 → [PacketFlow_Review.md](PacketFlow_Review.md)
 - `Room`/`GameSession`/`ClientPacketHandler` 등 게임 로직 골격 — 엔진 내부보다는 "엔진 위에 게임을 얹는" 영역이라 상대적으로 낮은 우선순위.

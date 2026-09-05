@@ -34,8 +34,6 @@ C++ IOCP 강의를 통해 만든 서버 엔진(`ServerCore`)을 기반으로, �
 - `Player`↔`GameSession` 참조 순환: 구조적으로 `weak_ptr`로 끊어내지 않고 `OnDisconnected`에서 수동 정리하는 임시 처방만 되어 있음
 - DB 호출이 전부 동기(synchronous)라 잡 큐/워커 스레드와 분리되어 있지 않음
 - `WCHAR[N]` 배열이 `DBBind::BindParam`에서 문자열이 아닌 이진 오버로드로 라우팅될 수 있음(미확인)
-- `FileUtils::ReadFile`이 텍스트 모드로 열려 CRLF 파일에서 버퍼 크기가 어긋날 수 있음
-- `XmlNode::GetStringValue()`에 `first_node()` null 체크 없음
 - `DBSynchronizer`의 메타 쿼리 클래스(`GetDBTables` 등)가 아직 수동 작성 상태
 - `.proto` 필드명이 카멜케이스라 접근자 이름이 어색함
 - 패킷 ID가 정적으로 매겨져 있어 리버스 엔지니어링에 취약함
