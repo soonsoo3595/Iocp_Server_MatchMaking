@@ -145,7 +145,11 @@ double XmlNode::GetDoubleValue(double defaultValue)
 
 const WCHAR* XmlNode::GetStringValue(const WCHAR* defaultValue)
 {
-	WCHAR* val = _node->first_node()->value();
+	XmlNodeType* firstNode = _node->first_node();
+	if (firstNode == nullptr)
+		return defaultValue;
+
+	WCHAR* val = firstNode->value();
 	if (val)
 		return val;
 

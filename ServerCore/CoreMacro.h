@@ -16,23 +16,11 @@
 #define	WRITE_LOCK_IDX(idx)		WriteLockGuard writeLockGuard_##idx(_locks[idx], typeid(this).name());
 #define WRITE_LOCK				WRITE_LOCK_IDX(0)
 
-/*----------------
-	  Memory
------------------*/
-
-#ifdef _DEBUG
-#define Xalloc(size)		PoolAllocator::Alloc(size)
-#define Xrelease(ptr)		PoolAllocator::Release(ptr)
-#else						
-#define Xalloc(size)		PoolAllocator::Alloc(size)
-#define Xrelease(ptr)		PoolAllocator::Release(ptr)
-#endif
-
 /*---------------
 	  Crash
 ---------------*/
 
-// ¿Œ¿ß¿˚¿∏∑Œ CRASH∏¶ ≥ª∞Ì ΩÕ¿ª ∂ß ªÁøÎ
+// Ïù∏ÏúÑÏ†ÅÏúºÎ°ú CRASHÎ•º ÎÇ¥Í≥† Ïã∂ÏùÑ Îïå ÏÇ¨Ïö©
 #define CRASH(cause)						\
 {											\
 	uint32* crash = nullptr;				\
@@ -40,7 +28,7 @@
 	*crash = 0xDEADBEEF;					\
 }
 
-// ¡∂∞«∫Œ ≈©∑°Ω√
+// Ï°∞Í±¥Î∂Ä ÌÅ¨ÎûòÏãú
 #define ASSERT_CRASH(expr)			\
 {									\
 	if (!(expr))					\
