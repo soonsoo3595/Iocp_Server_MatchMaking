@@ -2,7 +2,6 @@
 #include "ThreadManager.h"
 #include "Service.h"
 #include "Session.h"
-#include "BufferReader.h"
 #include "ServerPacketHandler.h"
 
 class ServerSession : public PacketSession

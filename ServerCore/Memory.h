@@ -36,7 +36,6 @@ private:
 	MemoryPool* _poolTable[MAX_ALLOC_SIZE + 1];
 };
 
-// (프로젝트이름new)와 같이 네이밍
 template<typename Type, typename... Args>
 Type* Xnew(Args&&... args)
 {
@@ -49,7 +48,6 @@ Type* Xnew(Args&&... args)
 template<typename Type>
 void Xdelete(Type* obj)
 {
-	// BaseAllocator::Release(obj);
 	obj->~Type();	// 소멸자 호출
 	PoolAllocator::Release(obj);
 }

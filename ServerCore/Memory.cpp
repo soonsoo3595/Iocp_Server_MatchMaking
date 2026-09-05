@@ -50,7 +50,6 @@ Memory::Memory()
 
 Memory::~Memory()
 {
-	// 프로그램이 끝나는거라 해제를 안해줘도 되긴 하는데 찝찝하니까
 	for (MemoryPool* pool : _pools)
 		delete pool;
 
