@@ -8,7 +8,6 @@ C++ / Windows IOCP(I/O Completion Port) 기반 비동기 게임 서버 엔진과
 - **플랫폼**: Windows (IOCP)
 - **빌드**: Visual Studio (`Server.sln`)
 - **직렬화**: Protobuf (`.proto` → `protoc`로 코드 생성, 빌드 전 자동 실행)
-- **DB**: ODBC + MSSQL LocalDB, 자체 ORM(XML 스키마 → 마이그레이션 쿼리 자동 생성)
 
 ## 폴더 구조
 
