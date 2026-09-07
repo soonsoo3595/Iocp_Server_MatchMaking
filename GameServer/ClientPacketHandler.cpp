@@ -82,7 +82,8 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 	Protocol::S_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_success(true);
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
-	gameSession->_currentPlayer->ownerSession->Send(sendBuffer);
+	if (GameSessionRef ownerSession = gameSession->_currentPlayer->ownerSession.lock())
+		ownerSession->Send(sendBuffer);
 
 	return true;
 }

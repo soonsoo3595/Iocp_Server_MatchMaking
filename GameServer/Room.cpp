@@ -19,6 +19,7 @@ void Room::Broadcast(SendBufferRef sendBuffer)
 {
 	for (auto& p : _players)
 	{
-		p.second->ownerSession->Send(sendBuffer);
+		if (GameSessionRef ownerSession = p.second->ownerSession.lock())
+			ownerSession->Send(sendBuffer);
 	}
 }
