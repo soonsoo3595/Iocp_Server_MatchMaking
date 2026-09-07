@@ -1,9 +1,9 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ServerPacketHandler.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
-// Á÷Á¢ ÄÁÅÙÃ÷ ÀÛ¾÷ÀÚ
+// ì§ì ‘ ì»¨í…ì¸  ì‘ì—…ì
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
@@ -15,20 +15,13 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 {
 	if (pkt.success() == false)
-		return true;
-
-	if (pkt.players().size() == 0)
 	{
-		// Ä³¸¯ÅÍ »ı¼ºÃ¢
+		LOG_WARNING(L"ë¡œê·¸ì¸ ì‹¤íŒ¨");
+		return true;
 	}
 
-	// ÀÔÀå UI ¹öÆ° ´­·¯¼­ °ÔÀÓ ÀÔÀå
-	// ex. Ä³¸¯ÅÍ ¼±ÅÃ...
-
-	Protocol::C_ENTER_GAME enterGamePkt;
-	enterGamePkt.set_playerindex(0); // Ã¹¹øÂ° Ä³¸¯ÅÍ·Î ÀÔÀå
-	auto sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
-	session->Send(sendBuffer);
+	const Protocol::Player& player = pkt.player();
+	LOG_INFO(L"ë¡œê·¸ì¸ ì„±ê³µ : id=%llu, ë‹‰ë„¤ì„ = %hs", player.id(), player.name().c_str());
 
 	return true;
 }

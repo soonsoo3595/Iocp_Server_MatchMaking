@@ -1,4 +1,4 @@
-syntax = "proto3";
+ï»¿syntax = "proto3";
 package Protocol;
 
 import "Enum.proto";
@@ -6,14 +6,13 @@ import "Struct.proto";
 
 message C_LOGIN
 {
-
+	string name = 1;
 }
 
 message S_LOGIN
 {
 	bool success = 1;
-	// DB¿¡¼­ ÇØ´ç À¯Àú¿Í °ü·ÃµÈ Á¤º¸¸¦ °°ÀÌ Àü´Ş, »ı¼ºÇÑ ÇÃ·¹ÀÌ¾î°¡ ¿©·¯°³ÀÏ¼öµµ
-	repeated Player players = 2; // ¾ÆÀÌµğ ¹ß±Ş Àü
+	Player player = 2;
 }
 
 message C_ENTER_GAME
@@ -33,6 +32,6 @@ message C_CHAT
 
 message S_CHAT
 {
-	uint64 playerId = 1;	// Ã¤ÆÃÀ» ÇÏ°í ÀÖ´Â ÇÃ·¹ÀÌ¾î
+	uint64 playerId = 1;	// ì±„íŒ…ì„ í•˜ê³  ìˆëŠ” í”Œë ˆì´ì–´
 	string msg = 2;
 }

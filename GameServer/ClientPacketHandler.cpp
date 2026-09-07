@@ -1,12 +1,14 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ClientPacketHandler.h"
 #include "GameSession.h"
+#include "GameSessionManager.h"
+#include "MmrManager.h"
 #include "Player.h"
 #include "Room.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
-// Á÷Á¢ ÄÁÅÙÃ÷ ÀÛ¾÷ÀÚ
+// ì‹¤ì œ ì²˜ë¦¬ ë¡œì§ë“¤
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
@@ -15,50 +17,41 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 	return false;
 }
 
-// ·Î±×ÀÎ ÆĞÅ¶ÀÌ ÇÑ ¹ø¸¸ ¿Ã°Å¶ó´Â »ı°¢ x
+// ë¡œê·¸ì¸ íŒ¨í‚· ì²˜ë¦¬
 bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
-	// TODO : Validation Ã¼Å©
+	const string name = pkt.name();
 
 	Protocol::S_LOGIN loginPkt;
-	loginPkt.set_success(true);
 
-	// DB¿¡¼­ ÇÃ·¹ÀÌ Á¤º¸¸¦ ±Ü¾î¿Â´Ù
-	// GameSession¿¡ ÇÃ·¹ÀÌ Á¤º¸¸¦ ÀúÀå (¸Ş¸ğ¸®) -> º¸Åë Account¶ó´Â Å¬·¡½º¸¦ ¸¸µé¾î¼­ °Å±â¿¡ ÀúÀå
+	if (name.empty() || GSessionManager.TryReserveName(name) == false)
+	{
+		LOG_WARNING(L"ë¡œê·¸ì¸ ì‹¤íŒ¨ : ë‹‰ë„¤ì„ = %hs", name.c_str());
 
-	// ID ¹ß±Ş (DB ¾ÆÀÌµğ°¡ ¾Æ´Ï°í, ÀÎ°ÔÀÓ ¾ÆÀÌµğ)
+		loginPkt.set_success(false);
+		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(loginPkt);
+		session->Send(sendBuffer);
+		return true;
+	}
+
 	static Atomic<uint64> idGenerator = 1;
 
-	{
-		auto player = loginPkt.add_players();
-		player->set_name(u8"DB¿¡¼­±Ü¾î¿ÂÀÌ¸§1");
-		player->set_playertype(Protocol::PLAYER_TYPE_KNIGHT);
+	PlayerRef playerRef = MakeShared<Player>();
+	playerRef->playerId = idGenerator++;
+	playerRef->name = name;
+	playerRef->mmr = GMmrManager.GetOrCreateMmr(name);   // ì„œë²„ ë‚´ë¶€ ì „ìš©, íŒ¨í‚·ì—” ì•ˆ ì‹¤ìŒ
+	playerRef->ownerSession = gameSession;
 
-		PlayerRef playerRef = MakeShared<Player>();
-		playerRef->playerId = idGenerator++;
-		playerRef->name = player->name();
-		playerRef->type = player->playertype();
-		playerRef->ownerSession = gameSession;
+	gameSession->_player = playerRef;
 
-		// ¼¼¼Ç¿¡¼­µµ ÇÃ·¹ÀÌ¾îµéÀ» ¸Ş¸ğ¸®¿¡ µé°íÀÖ¾î¾ß ÇÔ
-		gameSession->_players.push_back(playerRef);
-	}
+	LOG_INFO(L"ë¡œê·¸ì¸ ì„±ê³µ : playerId = %llu, ë‹‰ë„¤ì„ = %hs, mmr=%u", playerRef->playerId, name.c_str(), playerRef->mmr);
 
-	{
-		auto player = loginPkt.add_players();
-		player->set_name(u8"DB¿¡¼­±Ü¾î¿ÂÀÌ¸§2");
-		player->set_playertype(Protocol::PLAYER_TYPE_MAGE);
-
-		PlayerRef playerRef = MakeShared<Player>();
-		playerRef->playerId = idGenerator++;
-		playerRef->name = player->name();
-		playerRef->type = player->playertype();
-		playerRef->ownerSession = gameSession;
-
-		gameSession->_players.push_back(playerRef);
-	}
+	loginPkt.set_success(true);
+	Protocol::Player* playerProto = loginPkt.mutable_player();
+	playerProto->set_id(playerRef->playerId);
+	playerProto->set_name(playerRef->name);
 
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(loginPkt);
 	session->Send(sendBuffer);
@@ -68,6 +61,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 
 bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 {
+	/*
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
 	uint64 index = pkt.playerindex();
@@ -76,7 +70,7 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 	gameSession->_currentPlayer = gameSession->_players[index]; // READ_ONLY?
 	gameSession->_room = GRoom;
 	// GRoom.Enter(player); // WRITE_LOCK
-	// GRoom.PushJob(MakeShared<EnterJob>(GRoom, player));	// ¿¹¾à
+	// GRoom.PushJob(MakeShared<EnterJob>(GRoom, player));	// ì˜ˆì•½
 	GRoom->DoAsync(&Room::Enter, gameSession->_currentPlayer);
 
 	Protocol::S_ENTER_GAME enterGamePkt;
@@ -85,11 +79,13 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 	if (GameSessionRef ownerSession = gameSession->_currentPlayer->ownerSession.lock())
 		ownerSession->Send(sendBuffer);
 
+	*/
 	return true;
 }
 
 bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 {
+	/*
 	std::cout << pkt.msg() << endl;
 
 	Protocol::S_CHAT chatPkt;
@@ -99,6 +95,7 @@ bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 	// GRoom.Broadcast(sendBuffer); // WRITE_LOCK
 	// GRoom.PushJob(MakeShared<BroadcastJob>(GRoom, sendBuffer));
 	GRoom->DoAsync(&Room::Broadcast, sendBuffer);
+	*/
 
 	return true;
 }

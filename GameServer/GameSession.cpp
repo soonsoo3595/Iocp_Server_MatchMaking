@@ -3,6 +3,7 @@
 #include "GameSessionManager.h"
 #include "ClientPacketHandler.h"
 #include "Room.h"
+#include "Player.h"
 
 void GameSession::OnConnected()
 {
@@ -13,7 +14,14 @@ void GameSession::OnDisconnected()
 {
 	GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));
 
-	if (_currentPlayer)
+	if (_player)
+	{
+		LOG_INFO(L"Player logged out. playerId=%llu, name=%hs", _player->playerId, _player->name.c_str());
+		GSessionManager.ReleaseName(_player->name);
+	}
+
+	/*
+	if (_player)
 	{
 		if(auto room = _room.lock())
 		{
@@ -23,6 +31,7 @@ void GameSession::OnDisconnected()
 
 	_currentPlayer = nullptr;
 	_players.clear();
+	*/
 }
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)

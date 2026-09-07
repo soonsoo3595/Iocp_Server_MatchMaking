@@ -30,6 +30,9 @@
     <ClCompile Include="GameSessionManager.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="MmrManager.cpp">
+      <Filter>GameContents</Filter>
+    </ClCompile>
     <ClCompile Include="ClientPacketHandler.cpp">
       <Filter>Main</Filter>
     </ClCompile>
@@ -55,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="GameSessionManager.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="MmrManager.h">
+      <Filter>GameContents</Filter>
     </ClInclude>
     <ClInclude Include="GameSession.h">
       <Filter>Main</Filter>

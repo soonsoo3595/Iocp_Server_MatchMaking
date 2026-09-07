@@ -16,6 +16,23 @@ void GameSessionManager::Remove(GameSessionRef session)
 	_sessions.erase(session);
 }
 
+bool GameSessionManager::TryReserveName(const string& name)
+{
+	WRITE_LOCK;
+
+	if (_activeNames.find(name) != _activeNames.end())
+		return false;
+
+	_activeNames.insert(name);
+	return true;
+}
+
+void GameSessionManager::ReleaseName(const string& name)
+{
+	WRITE_LOCK;
+	_activeNames.erase(name);
+}
+
 // Send()는 소켓 I/O(WSASend)까지 걸릴 수 있는 무거운 작업이라, 락을 쥔 채로
 // 세션 수만큼 반복하면 그동안 Add/Remove가 전부 막힌다. 동접이 많을 때는
 // Lock의 10초 타임아웃(LOCK_TIMEOUT)에 걸려 크래시로 이어질 수 있음.
@@ -34,5 +51,5 @@ void GameSessionManager::Broadcast(SendBufferRef sendBuffer)
 	for (GameSessionRef& session : snapshot)
 	{
 		session->Send(sendBuffer);
-	}+
+	}
 }

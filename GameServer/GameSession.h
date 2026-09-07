@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Session.h"
 
 class GameSession : public PacketSession
@@ -6,8 +6,6 @@ class GameSession : public PacketSession
 public:
 	~GameSession()
 	{
-		// ÇöÀç ¼Ò¸êÀÚ ·Î±×°¡ ¾È ÂïÈ÷°í ÀÖÀ½ -> ¸Ş¸ğ¸® Leak ¹ß»ı!
-		// Player -> GameSeesionRef¸¦ µé°í ÀÖ¾î¼­ »çÀÌÅ¬ »ı±è
 		cout << "~GameSession" << endl;
 	}
 
@@ -17,8 +15,6 @@ public:
 	virtual void OnSend(int32 len) override;
 
 public:
-	Vector<PlayerRef> _players;
-
-	PlayerRef _currentPlayer;		// ÇöÀç ¾î¶² ÇÃ·¹ÀÌ¾î·Î Á¢¼ÓÁßÀÎÁö
-	weak_ptr<class Room> _room;		// ¾î¶² Room¿¡ µé¾î°¡ÀÖ´ÂÁö
+	PlayerRef				_player;
+	weak_ptr<class Room>	_room;		// ì–´ë–¤ Roomì— ë“¤ì–´ê°€ìˆëŠ”ì§€
 };
