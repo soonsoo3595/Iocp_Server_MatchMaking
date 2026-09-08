@@ -8,10 +8,9 @@
 
 Memory::Memory()
 {
-	int32 size = 0;
 	int32 tableIndex = 0;
 
-	for (size = 32; size <= 1024; size += 32)
+	for (int32 size = 32; size <= 1024; size += 32)
 	{
 		MemoryPool* pool = new MemoryPool(size);
 		_pools.push_back(pool);
@@ -23,7 +22,7 @@ Memory::Memory()
 		}
 	}
 
-	for (; size <= 2048; size += 128)
+	for (int32 size = 1024 + 128; size <= 2048; size += 128)
 	{
 		MemoryPool* pool = new MemoryPool(size);
 		_pools.push_back(pool);
@@ -35,7 +34,7 @@ Memory::Memory()
 		}
 	}
 
-	for (; size <= 4096; size += 256)
+	for (int32 size = 2048 + 256; size <= 4096; size += 256)
 	{
 		MemoryPool* pool = new MemoryPool(size);
 		_pools.push_back(pool);
@@ -54,6 +53,12 @@ Memory::~Memory()
 		delete pool;
 
 	_pools.clear();
+}
+
+Memory& Memory::GetInstance()
+{
+	static Memory instance;
+	return instance;
 }
 
 /// <summary>

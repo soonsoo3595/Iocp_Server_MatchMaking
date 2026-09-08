@@ -40,7 +40,9 @@ void DoWorkerJob(ServerServiceRef& service)
 
 int main()
 {
-	GLogger->Init(LogOutput::Console, LogLevel::Verbose);
+	GLogger->Init(LogOutput::Console, LogLevel::Log);
+
+	InitRoom();
 
 	ClientPacketHandler::Init();
 

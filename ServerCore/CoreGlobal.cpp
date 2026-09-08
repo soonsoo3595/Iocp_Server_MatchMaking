@@ -11,7 +11,6 @@
 #include "Logger.h"
 
 ThreadManager*				GThreadManager = nullptr;
-Memory*						GMemory = nullptr;
 SendBufferManager*			GSendBufferManager = nullptr;
 GlobalQueue*				GGlobalQueue = nullptr;
 JobTimer*					GJobTimer = nullptr;	
@@ -26,7 +25,6 @@ public:
 	CoreGlobal()
 	{
 		GThreadManager = new ThreadManager();
-		GMemory = new Memory();
 		GSendBufferManager = new SendBufferManager();
 		GGlobalQueue = new GlobalQueue();
 		GJobTimer = new JobTimer();
@@ -38,7 +36,6 @@ public:
 	~CoreGlobal()
 	{
 		delete GThreadManager;
-		delete GMemory;
 		delete GSendBufferManager;
 		delete GGlobalQueue;
 		delete GJobTimer;

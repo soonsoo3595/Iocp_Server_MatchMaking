@@ -3,7 +3,12 @@
 #include "Player.h"
 #include "GameSession.h"
 
-shared_ptr<Room> GRoom = make_shared<Room>();
+shared_ptr<Room> GRoom = nullptr;
+
+void InitRoom()
+{
+	GRoom = make_shared<Room>();
+}
 
 void Room::Enter(PlayerRef player)
 {

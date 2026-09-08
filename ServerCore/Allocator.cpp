@@ -47,10 +47,10 @@ void StompAllocator::Release(void* ptr)
 
 void* PoolAllocator::Alloc(int32 size)
 {
-	return GMemory->Allocate(size);
+	return Memory::GetInstance().Allocate(size);
 }
 
 void PoolAllocator::Release(void* ptr)
 {
-	GMemory->Release(ptr);
+	Memory::GetInstance().Release(ptr);
 }
