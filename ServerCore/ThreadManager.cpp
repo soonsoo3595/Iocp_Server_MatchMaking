@@ -28,9 +28,7 @@ void ThreadManager::Launch(function<void(void)> callback)
 	_threads.push_back(thread([=]()
 		{
 			InitTLS();
-			LOG_INFO(L"Thread launched. threadId=%d", LThreadId);
 			callback();
-			LOG_INFO(L"Thread finished. threadId=%d", LThreadId);
 			DestroyTLS();
 		}));
 }
