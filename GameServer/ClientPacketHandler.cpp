@@ -5,6 +5,7 @@
 #include "MmrManager.h"
 #include "Player.h"
 #include "Room.h"
+#include "StringUtils.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -22,11 +23,24 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
-	const string name = pkt.name();
-
 	Protocol::S_LOGIN loginPkt;
 
-	if (name.empty() || GSessionManager.TryReserveName(name) == false)
+	// 이미 로그인된 세션이 다시 로그인을 시도하는 경우.
+	// 검증 없이 새 Player로 덮어쓰면 이전에 예약해둔 이름이 영영 반납되지 않는다.
+	if (gameSession->_player != nullptr)
+	{
+		LOG_WARNING(L"로그인 실패 : 이미 로그인된 세션 (playerId=%llu, 닉네임=%hs)",
+			gameSession->_player->playerId, gameSession->_player->name.c_str());
+
+		loginPkt.set_success(false);
+		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(loginPkt);
+		session->Send(sendBuffer);
+		return true;
+	}
+
+	const string name = StringUtils::Trim(pkt.name());
+
+	if (StringUtils::IsValidNickname(name) == false || GSessionManager.TryReserveName(name) == false)
 	{
 		LOG_WARNING(L"로그인 실패 : 닉네임 = %hs", name.c_str());
 

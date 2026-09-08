@@ -138,6 +138,9 @@
     <ClInclude Include="FileUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="StringUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="XMLParser.h">
       <Filter>XML</Filter>
     </ClInclude>
@@ -234,6 +237,9 @@
       <Filter>DB</Filter>
     </ClCompile>
     <ClCompile Include="FileUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="StringUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="XMLParser.cpp">
