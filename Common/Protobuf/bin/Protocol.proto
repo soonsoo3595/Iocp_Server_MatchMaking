@@ -1,4 +1,4 @@
-﻿syntax = "proto3";
+syntax = "proto3";
 package Protocol;
 
 import "Enum.proto";
@@ -13,6 +13,27 @@ message S_LOGIN
 {
 	bool success = 1;
 	Player player = 2;
+}
+
+message C_MATCH_START
+{
+	Position primaryPosition = 1;
+	Position secondaryPosition = 2;
+}
+
+message S_MATCH_QUEUED
+{
+
+}
+
+message C_MATCH_CANCEL
+{
+
+}
+
+message S_MATCH_CANCELED
+{
+
 }
 
 message C_ENTER_GAME
@@ -32,6 +53,6 @@ message C_CHAT
 
 message S_CHAT
 {
-	uint64 playerId = 1;	// 채팅을 하고 있는 플레이어
+	uint64 playerId = 1;
 	string msg = 2;
 }

@@ -194,6 +194,7 @@
     <ClInclude Include="Enum.pb.h" />
     <ClInclude Include="Protocol.pb.h" />
     <ClInclude Include="ServerPacketHandler.h" />
+    <ClInclude Include="ClientState.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Struct.pb.h" />
   </ItemGroup>

@@ -8,15 +8,21 @@ enum : uint16
 {
 	PKT_C_LOGIN = 1000,
 	PKT_S_LOGIN = 1001,
-	PKT_C_ENTER_GAME = 1002,
-	PKT_S_ENTER_GAME = 1003,
-	PKT_C_CHAT = 1004,
-	PKT_S_CHAT = 1005,
+	PKT_C_MATCH_START = 1002,
+	PKT_S_MATCH_QUEUED = 1003,
+	PKT_C_MATCH_CANCEL = 1004,
+	PKT_S_MATCH_CANCELED = 1005,
+	PKT_C_ENTER_GAME = 1006,
+	PKT_S_ENTER_GAME = 1007,
+	PKT_C_CHAT = 1008,
+	PKT_S_CHAT = 1009,
 };
 
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt);
+bool Handle_S_MATCH_QUEUED(PacketSessionRef& session, Protocol::S_MATCH_QUEUED& pkt);
+bool Handle_S_MATCH_CANCELED(PacketSessionRef& session, Protocol::S_MATCH_CANCELED& pkt);
 bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt);
 bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt);
 
@@ -28,6 +34,8 @@ public:
 		for (int32 i = 0; i < UINT16_MAX; i++)
 			GPacketHandler[i] = Handle_INVALID;
 		GPacketHandler[PKT_S_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_LOGIN>(Handle_S_LOGIN, session, buffer, len); };
+		GPacketHandler[PKT_S_MATCH_QUEUED] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_MATCH_QUEUED>(Handle_S_MATCH_QUEUED, session, buffer, len); };
+		GPacketHandler[PKT_S_MATCH_CANCELED] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_MATCH_CANCELED>(Handle_S_MATCH_CANCELED, session, buffer, len); };
 		GPacketHandler[PKT_S_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_ENTER_GAME>(Handle_S_ENTER_GAME, session, buffer, len); };
 		GPacketHandler[PKT_S_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_CHAT>(Handle_S_CHAT, session, buffer, len); };
 	}
@@ -38,6 +46,8 @@ public:
 		return GPacketHandler[header->id](session, buffer, len);
 	}
 	static SendBufferRef MakeSendBuffer(Protocol::C_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_C_LOGIN); }
+	static SendBufferRef MakeSendBuffer(Protocol::C_MATCH_START& pkt) { return MakeSendBuffer(pkt, PKT_C_MATCH_START); }
+	static SendBufferRef MakeSendBuffer(Protocol::C_MATCH_CANCEL& pkt) { return MakeSendBuffer(pkt, PKT_C_MATCH_CANCEL); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_C_ENTER_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }
 

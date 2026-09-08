@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "ServerPacketHandler.h"
+#include "ClientState.h"
+#include "FileUtils.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -21,8 +23,24 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 	}
 
 	const Protocol::Player& player = pkt.player();
-	LOG_INFO(L"로그인 성공 : id=%llu, 닉네임 = %hs", player.id(), player.name().c_str());
+	LOG_INFO(L"로그인 성공 : id=%llu, 닉네임 = %s", player.id(), FileUtils::Convert(player.name()).c_str());
 
+	GClientState = ClientState::LOBBY;
+
+	return true;
+}
+
+bool Handle_S_MATCH_QUEUED(PacketSessionRef& session, Protocol::S_MATCH_QUEUED& pkt)
+{
+	LOG_INFO(L"매칭 대기열에 등록되었습니다. 매칭을 기다리는 중...");
+	GClientState = ClientState::MATCHING;
+	return true;
+}
+
+bool Handle_S_MATCH_CANCELED(PacketSessionRef& session, Protocol::S_MATCH_CANCELED& pkt)
+{
+	LOG_INFO(L"매칭이 취소되었습니다.");
+	GClientState = ClientState::LOBBY;
 	return true;
 }
 

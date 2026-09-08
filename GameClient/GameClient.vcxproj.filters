@@ -38,6 +38,9 @@
     <ClInclude Include="ServerPacketHandler.h">
       <Filter>Main</Filter>
     </ClInclude>
+    <ClInclude Include="ClientState.h">
+      <Filter>Main</Filter>
+    </ClInclude>
     <ClInclude Include="Enum.pb.h">
       <Filter>Protocol</Filter>
     </ClInclude>
