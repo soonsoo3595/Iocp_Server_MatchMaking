@@ -35,7 +35,8 @@ constexpr PlayerInfo::PlayerInfo(
   : name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , id_(uint64_t{0u})
   , position_(0)
-{}
+
+  , championid_(0u){}
 struct PlayerInfoDefaultTypeInternal {
   constexpr PlayerInfoDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -66,6 +67,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_Struct_2eproto::offsets[] PROT
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, id_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, name_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, position_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, championid_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::Protocol::Player)},
@@ -79,16 +81,17 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\"\n\006"
-  "Player\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\"L\n\nPlay"
+  "Player\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\"`\n\nPlay"
   "erInfo\022\n\n\002id\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022$\n\010posi"
-  "tion\030\003 \001(\0162\022.Protocol.Positionb\006proto3"
+  "tion\030\003 \001(\0162\022.Protocol.Position\022\022\n\nchampi"
+  "onId\030\004 \001(\rb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_Struct_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Struct_2eproto = {
-  false, false, 158, descriptor_table_protodef_Struct_2eproto, "Struct.proto", 
+  false, false, 178, descriptor_table_protodef_Struct_2eproto, "Struct.proto", 
   &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 2,
   schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
   file_level_metadata_Struct_2eproto, file_level_enum_descriptors_Struct_2eproto, file_level_service_descriptors_Struct_2eproto,
@@ -354,8 +357,8 @@ PlayerInfo::PlayerInfo(const PlayerInfo& from)
       GetArenaForAllocation());
   }
   ::memcpy(&id_, &from.id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&position_) -
-    reinterpret_cast<char*>(&id_)) + sizeof(position_));
+    static_cast<size_t>(reinterpret_cast<char*>(&championid_) -
+    reinterpret_cast<char*>(&id_)) + sizeof(championid_));
   // @@protoc_insertion_point(copy_constructor:Protocol.PlayerInfo)
 }
 
@@ -363,8 +366,8 @@ void PlayerInfo::SharedCtor() {
 name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&id_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&position_) -
-    reinterpret_cast<char*>(&id_)) + sizeof(position_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&championid_) -
+    reinterpret_cast<char*>(&id_)) + sizeof(championid_));
 }
 
 PlayerInfo::~PlayerInfo() {
@@ -396,8 +399,8 @@ void PlayerInfo::Clear() {
 
   name_.ClearToEmpty();
   ::memset(&id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&position_) -
-      reinterpret_cast<char*>(&id_)) + sizeof(position_));
+      reinterpret_cast<char*>(&championid_) -
+      reinterpret_cast<char*>(&id_)) + sizeof(championid_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -429,6 +432,13 @@ const char* PlayerInfo::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
           ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_position(static_cast<::Protocol::Position>(val));
+        } else goto handle_unusual;
+        continue;
+      // uint32 championId = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          championid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
         } else goto handle_unusual;
         continue;
       default: {
@@ -483,6 +493,12 @@ failure:
       3, this->_internal_position(), target);
   }
 
+  // uint32 championId = 4;
+  if (this->championid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(4, this->_internal_championid(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -517,6 +533,13 @@ size_t PlayerInfo::ByteSizeLong() const {
   if (this->position() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_position());
+  }
+
+  // uint32 championId = 4;
+  if (this->championid() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_championid());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -559,6 +582,9 @@ void PlayerInfo::MergeFrom(const PlayerInfo& from) {
   if (from.position() != 0) {
     _internal_set_position(from._internal_position());
   }
+  if (from.championid() != 0) {
+    _internal_set_championid(from._internal_championid());
+  }
 }
 
 void PlayerInfo::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -588,8 +614,8 @@ void PlayerInfo::InternalSwap(PlayerInfo* other) {
       &other->name_, other->GetArenaForAllocation()
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(PlayerInfo, position_)
-      + sizeof(PlayerInfo::position_)
+      PROTOBUF_FIELD_OFFSET(PlayerInfo, championid_)
+      + sizeof(PlayerInfo::championid_)
       - PROTOBUF_FIELD_OFFSET(PlayerInfo, id_)>(
           reinterpret_cast<char*>(&id_),
           reinterpret_cast<char*>(&other->id_));

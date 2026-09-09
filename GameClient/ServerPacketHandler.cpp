@@ -93,9 +93,44 @@ bool Handle_S_CHAMPSELECT_START(PacketSessionRef& session, Protocol::S_CHAMPSELE
 		cout << "  - " << info.name() << " (" << PositionToString(info.position()) << ")" << endl;
 	}
 	cout << "=====================================" << endl;
-	// TODO : 픽 UI/로직은 아직 구현 전.
 
 	GClientState = ClientState::CHAMP_SELECT;
+
+	return true;
+}
+
+bool Handle_S_PICK_UPDATE(PacketSessionRef& session, Protocol::S_PICK_UPDATE& pkt)
+{
+	LOG_INFO(L"픽 현황 : playerId=%llu, championId=%u", pkt.playerid(), pkt.championid());
+	cout << "  [픽] playerId=" << pkt.playerid() << " -> championId=" << pkt.championid() << endl;
+	return true;
+}
+
+bool Handle_S_PICK_FAILED(PacketSessionRef& session, Protocol::S_PICK_FAILED& pkt)
+{
+	LOG_WARNING(L"픽 실패 : 이미 픽했거나 다른 사람이 먼저 픽한 챔피언입니다. 다시 시도하세요.");
+	cout << "픽 실패 - 이미 픽했거나 다른 사람이 먼저 픽한 챔피언입니다." << endl;
+
+	// 다시 골라야 하니 챔피언 선택 화면으로 복귀 (WAITING_GAME_START로 넘어가있던 상태 되돌림)
+	GClientState = ClientState::CHAMP_SELECT;
+
+	return true;
+}
+
+bool Handle_S_GAME_START(PacketSessionRef& session, Protocol::S_GAME_START& pkt)
+{
+	LOG_INFO(L"전원 픽 완료! 게임을 시작합니다. matchId=%llu", pkt.matchid());
+
+	cout << "\n===== 게임 시작 (matchId=" << pkt.matchid() << ") =====" << endl;
+	for (const Protocol::PlayerInfo& info : pkt.finalteams())
+	{
+		cout << "  - " << info.name() << " (" << PositionToString(info.position())
+			<< ", championId=" << info.championid() << ")" << endl;
+	}
+	cout << "===========================================" << endl;
+	cout << "(실제 인게임 로직은 기획 범위 밖 - 매치메이킹 흐름은 여기서 끝입니다)" << endl;
+
+	GClientState = ClientState::GAME_STARTED;
 
 	return true;
 }
@@ -108,6 +143,6 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 
 bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt)
 {
-	std::cout << pkt.msg() << endl;
+	cout << "[채팅] playerId=" << pkt.playerid() << " : " << pkt.msg() << endl;
 	return true;
 }

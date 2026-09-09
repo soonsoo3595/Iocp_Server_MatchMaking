@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "MatchAcceptSession.h"
+#include "ChampSelectSession.h"
 #include "GameSession.h"
 #include "ClientPacketHandler.h"
 
@@ -117,34 +118,21 @@ void MatchAcceptSession::Resolve(bool allAccepted)
 
 	if (allAccepted)
 	{
-		Vector<Protocol::PlayerInfo> allInfos;
-		for (const MatchedPlayer& player : _teamA)
-			allInfos.push_back(ToPlayerInfo(player));
-		for (const MatchedPlayer& player : _teamB)
-			allInfos.push_back(ToPlayerInfo(player));
-
-		Protocol::S_CHAMPSELECT_START startPkt;
-		startPkt.set_matchid(_matchId);
-		for (const Protocol::PlayerInfo& info : allInfos)
-			*startPkt.add_participants() = info;
-
-		auto sendToTeam = [&](const Vector<MatchedPlayer>& team)
+		// _matchAcceptSession 참조는 여기서 풀고, 이제부터는 ChampSelectSession이 담당.
+		auto releaseAcceptRef = [](const Vector<MatchedPlayer>& team)
 		{
 			for (const MatchedPlayer& player : team)
 			{
 				GameSessionRef session = player.ticket.session.lock();
-				if (session == nullptr)
-					continue;
-
-				session->_matchAcceptSession.reset();
-
-				auto sendBuffer = ClientPacketHandler::MakeSendBuffer(startPkt);
-				session->Send(sendBuffer);
+				if (session != nullptr)
+					session->_matchAcceptSession.reset();
 			}
 		};
+		releaseAcceptRef(_teamA);
+		releaseAcceptRef(_teamB);
 
-		sendToTeam(_teamA);
-		sendToTeam(_teamB);
+		shared_ptr<ChampSelectSession> champSelectSession = make_shared<ChampSelectSession>(_matchId, _teamA, _teamB);
+		champSelectSession->Start();
 
 		LOG_INFO(L"전원 수락 완료, 챔피언 선택 진입 : matchId=%llu", _matchId);
 		return;

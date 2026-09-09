@@ -14,12 +14,16 @@ enum : uint16
 	PKT_C_MATCH_ACCEPT = 1005,
 	PKT_C_MATCH_DECLINE = 1006,
 	PKT_S_CHAMPSELECT_START = 1007,
-	PKT_C_MATCH_CANCEL = 1008,
-	PKT_S_MATCH_CANCELED = 1009,
-	PKT_C_ENTER_GAME = 1010,
-	PKT_S_ENTER_GAME = 1011,
-	PKT_C_CHAT = 1012,
-	PKT_S_CHAT = 1013,
+	PKT_C_PICK_CHAMPION = 1008,
+	PKT_S_PICK_UPDATE = 1009,
+	PKT_S_PICK_FAILED = 1010,
+	PKT_S_GAME_START = 1011,
+	PKT_C_MATCH_CANCEL = 1012,
+	PKT_S_MATCH_CANCELED = 1013,
+	PKT_C_ENTER_GAME = 1014,
+	PKT_S_ENTER_GAME = 1015,
+	PKT_C_CHAT = 1016,
+	PKT_S_CHAT = 1017,
 };
 
 // Custom Handlers
@@ -28,6 +32,9 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt);
 bool Handle_S_MATCH_QUEUED(PacketSessionRef& session, Protocol::S_MATCH_QUEUED& pkt);
 bool Handle_S_MATCH_FOUND(PacketSessionRef& session, Protocol::S_MATCH_FOUND& pkt);
 bool Handle_S_CHAMPSELECT_START(PacketSessionRef& session, Protocol::S_CHAMPSELECT_START& pkt);
+bool Handle_S_PICK_UPDATE(PacketSessionRef& session, Protocol::S_PICK_UPDATE& pkt);
+bool Handle_S_PICK_FAILED(PacketSessionRef& session, Protocol::S_PICK_FAILED& pkt);
+bool Handle_S_GAME_START(PacketSessionRef& session, Protocol::S_GAME_START& pkt);
 bool Handle_S_MATCH_CANCELED(PacketSessionRef& session, Protocol::S_MATCH_CANCELED& pkt);
 bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt);
 bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt);
@@ -43,6 +50,9 @@ public:
 		GPacketHandler[PKT_S_MATCH_QUEUED] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_MATCH_QUEUED>(Handle_S_MATCH_QUEUED, session, buffer, len); };
 		GPacketHandler[PKT_S_MATCH_FOUND] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_MATCH_FOUND>(Handle_S_MATCH_FOUND, session, buffer, len); };
 		GPacketHandler[PKT_S_CHAMPSELECT_START] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_CHAMPSELECT_START>(Handle_S_CHAMPSELECT_START, session, buffer, len); };
+		GPacketHandler[PKT_S_PICK_UPDATE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_PICK_UPDATE>(Handle_S_PICK_UPDATE, session, buffer, len); };
+		GPacketHandler[PKT_S_PICK_FAILED] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_PICK_FAILED>(Handle_S_PICK_FAILED, session, buffer, len); };
+		GPacketHandler[PKT_S_GAME_START] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_GAME_START>(Handle_S_GAME_START, session, buffer, len); };
 		GPacketHandler[PKT_S_MATCH_CANCELED] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_MATCH_CANCELED>(Handle_S_MATCH_CANCELED, session, buffer, len); };
 		GPacketHandler[PKT_S_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_ENTER_GAME>(Handle_S_ENTER_GAME, session, buffer, len); };
 		GPacketHandler[PKT_S_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S_CHAT>(Handle_S_CHAT, session, buffer, len); };
@@ -57,6 +67,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::C_MATCH_START& pkt) { return MakeSendBuffer(pkt, PKT_C_MATCH_START); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_MATCH_ACCEPT& pkt) { return MakeSendBuffer(pkt, PKT_C_MATCH_ACCEPT); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_MATCH_DECLINE& pkt) { return MakeSendBuffer(pkt, PKT_C_MATCH_DECLINE); }
+	static SendBufferRef MakeSendBuffer(Protocol::C_PICK_CHAMPION& pkt) { return MakeSendBuffer(pkt, PKT_C_PICK_CHAMPION); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_MATCH_CANCEL& pkt) { return MakeSendBuffer(pkt, PKT_C_MATCH_CANCEL); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_C_ENTER_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }

@@ -11,7 +11,9 @@ enum class ClientState : int32
 	MATCHING,			// 매칭 대기열에 등록된 상태
 	MATCH_FOUND,		// 매칭 성사됨. 수락/거절을 물어보는 중.
 	WAITING_ACCEPT_RESULT,	// 수락/거절 응답을 보냈고, 전원 결과(챔프선택 진입 or 재매칭/로비)를 기다리는 중
-	CHAMP_SELECT,		// 전원 수락 완료, 챔피언 선택 진입 (아직 픽 UI는 없음)
+	CHAMP_SELECT,		// 전원 수락 완료, 챔피언 선택 진입 - 챔피언(임의의 숫자 ID)을 고르는 중
+	WAITING_GAME_START,	// 픽을 보냈고, 전원 픽 완료(S_GAME_START)를 기다리는 중
+	GAME_STARTED,		// 전원 픽 완료. 실제 인게임 로직은 기획 범위 밖이라 여기서 끝.
 };
 
 extern Atomic<ClientState> GClientState;

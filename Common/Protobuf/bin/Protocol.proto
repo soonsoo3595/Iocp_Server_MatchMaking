@@ -50,6 +50,28 @@ message S_CHAMPSELECT_START
 	repeated PlayerInfo participants = 2;
 }
 
+message C_PICK_CHAMPION
+{
+	uint32 championId = 1;
+}
+
+message S_PICK_UPDATE
+{
+	uint64 playerId = 1;
+	uint32 championId = 2;
+}
+
+message S_PICK_FAILED
+{
+
+}
+
+message S_GAME_START
+{
+	uint64 matchId = 1;
+	repeated PlayerInfo finalTeams = 2;
+}
+
 message C_MATCH_CANCEL
 {
 

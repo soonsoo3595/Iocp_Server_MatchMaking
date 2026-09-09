@@ -329,6 +329,7 @@ class PlayerInfo final :
     kNameFieldNumber = 2,
     kIdFieldNumber = 1,
     kPositionFieldNumber = 3,
+    kChampionIdFieldNumber = 4,
   };
   // string name = 2;
   void clear_name();
@@ -362,6 +363,15 @@ class PlayerInfo final :
   void _internal_set_position(::Protocol::Position value);
   public:
 
+  // uint32 championId = 4;
+  void clear_championid();
+  ::PROTOBUF_NAMESPACE_ID::uint32 championid() const;
+  void set_championid(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_championid() const;
+  void _internal_set_championid(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.PlayerInfo)
  private:
   class _Internal;
@@ -372,6 +382,7 @@ class PlayerInfo final :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
   ::PROTOBUF_NAMESPACE_ID::uint64 id_;
   int position_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 championid_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Struct_2eproto;
 };
@@ -538,6 +549,26 @@ inline void PlayerInfo::_internal_set_position(::Protocol::Position value) {
 inline void PlayerInfo::set_position(::Protocol::Position value) {
   _internal_set_position(value);
   // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.position)
+}
+
+// uint32 championId = 4;
+inline void PlayerInfo::clear_championid() {
+  championid_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 PlayerInfo::_internal_championid() const {
+  return championid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 PlayerInfo::championid() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.championId)
+  return _internal_championid();
+}
+inline void PlayerInfo::_internal_set_championid(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  championid_ = value;
+}
+inline void PlayerInfo::set_championid(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_championid(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.championId)
 }
 
 #ifdef __GNUC__

@@ -14,4 +14,5 @@ message PlayerInfo
 	uint64 id = 1;
 	string name = 2;
 	Position position = 3;
+	uint32 championId = 4;	// 픽 전에는 0. S_GAME_START의 finalTeams에서만 의미 있음.
 }

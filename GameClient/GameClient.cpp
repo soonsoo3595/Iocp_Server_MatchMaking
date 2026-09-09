@@ -230,6 +230,84 @@ void RunMatchFoundMenu()
 	}
 }
 
+// 콘솔에서 한 줄(채팅 등)을 UTF-8로 안전하게 읽어온다.
+// (콘솔 입력은 시스템 로캘 기준으로 들어오는데, protobuf string은 항상 UTF-8이어야 해서
+// 닉네임 입력 때와 마찬가지로 와이드로 받아서 변환한다 - GameClient.cpp의 main() 참고)
+string ReadLineAsUtf8()
+{
+	wstring wideLine;
+	std::getline(wcin, wideLine);
+
+	const int32 utf8Len = ::WideCharToMultiByte(CP_UTF8, 0, wideLine.c_str(), static_cast<int32>(wideLine.size()), NULL, 0, NULL, NULL);
+	string line;
+	line.resize(utf8Len);
+	::WideCharToMultiByte(CP_UTF8, 0, wideLine.c_str(), static_cast<int32>(wideLine.size()), &line[0], utf8Len, NULL, NULL);
+
+	return line;
+}
+
+// 챔피언 선택 화면 : 픽 또는 채팅 중 하나를 고른다.
+void RunChampSelectMenu()
+{
+	cout << "\n1. 챔피언 픽\n2. 채팅 보내기\n선택 : ";
+
+	int32 choice = 0;
+	if (!(cin >> choice))
+	{
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		return;
+	}
+
+	if (GSession == nullptr)
+	{
+		cout << "서버와의 연결이 끊겼습니다." << endl;
+		return;
+	}
+
+	switch (choice)
+	{
+	case 1:
+	{
+		cout << "픽할 챔피언 ID를 입력하세요 (임의의 양의 정수) : ";
+
+		uint32 championId = 0;
+		if (!(cin >> championId) || championId == 0)
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "잘못된 입력입니다. 0보다 큰 숫자를 입력하세요." << endl;
+			return;
+		}
+
+		Protocol::C_PICK_CHAMPION pickPkt;
+		pickPkt.set_championid(championId);
+		auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pickPkt);
+		GSession->Send(sendBuffer);
+
+		GClientState = ClientState::WAITING_GAME_START;
+		cout << "챔피언 " << championId << "번을 픽했습니다. 다른 플레이어들의 픽을 기다리는 중..." << endl;
+		break;
+	}
+	case 2:
+	{
+		cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 메뉴 번호 뒤에 남은 개행 비우기
+
+		cout << "채팅 메시지를 입력하세요 : ";
+		const string msg = ReadLineAsUtf8();
+
+		Protocol::C_CHAT chatPkt;
+		chatPkt.set_msg(msg);
+		auto sendBuffer = ServerPacketHandler::MakeSendBuffer(chatPkt);
+		GSession->Send(sendBuffer);
+		break;
+	}
+	default:
+		cout << "잘못된 선택입니다." << endl;
+		break;
+	}
+}
+
 void RunConsoleMenuLoop()
 {
 	while (true)
@@ -256,7 +334,15 @@ void RunConsoleMenuLoop()
 			this_thread::sleep_for(100ms);
 			break;
 		case ClientState::CHAMP_SELECT:
-			// 챔피언 선택 UI는 아직 구현 전. 참가자 목록은 Handle_S_CHAMPSELECT_START에서 이미 출력함.
+			RunChampSelectMenu();
+			break;
+		case ClientState::WAITING_GAME_START:
+			// 서버가 전원 픽 완료(S_GAME_START)를 보내줄 때까지 대기. 픽 실패(S_PICK_FAILED)가
+			// 오면 Handle_S_PICK_FAILED가 다시 CHAMP_SELECT로 되돌려준다.
+			this_thread::sleep_for(100ms);
+			break;
+		case ClientState::GAME_STARTED:
+			// 실제 인게임 로직은 기획 범위 밖. 결과는 Handle_S_GAME_START에서 이미 출력함.
 			this_thread::sleep_for(100ms);
 			break;
 		}

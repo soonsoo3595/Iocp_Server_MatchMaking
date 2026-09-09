@@ -57,6 +57,9 @@
     <ClCompile Include="MatchAcceptSession.cpp">
       <Filter>GameContents</Filter>
     </ClCompile>
+    <ClCompile Include="ChampSelectSession.cpp">
+      <Filter>GameContents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -93,6 +96,9 @@
       <Filter>GameContents</Filter>
     </ClInclude>
     <ClInclude Include="MatchAcceptSession.h">
+      <Filter>GameContents</Filter>
+    </ClInclude>
+    <ClInclude Include="ChampSelectSession.h">
       <Filter>GameContents</Filter>
     </ClInclude>
     <ClInclude Include="GenProcedures.h">

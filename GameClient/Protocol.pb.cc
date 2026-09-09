@@ -119,6 +119,55 @@ struct S_CHAMPSELECT_STARTDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT S_CHAMPSELECT_STARTDefaultTypeInternal _S_CHAMPSELECT_START_default_instance_;
+constexpr C_PICK_CHAMPION::C_PICK_CHAMPION(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : championid_(0u){}
+struct C_PICK_CHAMPIONDefaultTypeInternal {
+  constexpr C_PICK_CHAMPIONDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~C_PICK_CHAMPIONDefaultTypeInternal() {}
+  union {
+    C_PICK_CHAMPION _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT C_PICK_CHAMPIONDefaultTypeInternal _C_PICK_CHAMPION_default_instance_;
+constexpr S_PICK_UPDATE::S_PICK_UPDATE(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : playerid_(uint64_t{0u})
+  , championid_(0u){}
+struct S_PICK_UPDATEDefaultTypeInternal {
+  constexpr S_PICK_UPDATEDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~S_PICK_UPDATEDefaultTypeInternal() {}
+  union {
+    S_PICK_UPDATE _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT S_PICK_UPDATEDefaultTypeInternal _S_PICK_UPDATE_default_instance_;
+constexpr S_PICK_FAILED::S_PICK_FAILED(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct S_PICK_FAILEDDefaultTypeInternal {
+  constexpr S_PICK_FAILEDDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~S_PICK_FAILEDDefaultTypeInternal() {}
+  union {
+    S_PICK_FAILED _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT S_PICK_FAILEDDefaultTypeInternal _S_PICK_FAILED_default_instance_;
+constexpr S_GAME_START::S_GAME_START(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : finalteams_()
+  , matchid_(uint64_t{0u}){}
+struct S_GAME_STARTDefaultTypeInternal {
+  constexpr S_GAME_STARTDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~S_GAME_STARTDefaultTypeInternal() {}
+  union {
+    S_GAME_START _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT S_GAME_STARTDefaultTypeInternal _S_GAME_START_default_instance_;
 constexpr C_MATCH_CANCEL::C_MATCH_CANCEL(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
 struct C_MATCH_CANCELDefaultTypeInternal {
@@ -191,7 +240,7 @@ struct S_CHATDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT S_CHATDefaultTypeInternal _S_CHAT_default_instance_;
 }  // namespace Protocol
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_Protocol_2eproto[14];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_Protocol_2eproto[18];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -248,6 +297,31 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_Protocol_2eproto::offsets[] PR
   PROTOBUF_FIELD_OFFSET(::Protocol::S_CHAMPSELECT_START, matchid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_CHAMPSELECT_START, participants_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_PICK_CHAMPION, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_PICK_CHAMPION, championid_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_PICK_UPDATE, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_PICK_UPDATE, playerid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_PICK_UPDATE, championid_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_PICK_FAILED, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_GAME_START, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_GAME_START, matchid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_GAME_START, finalteams_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_MATCH_CANCEL, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -292,12 +366,16 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 34, -1, sizeof(::Protocol::C_MATCH_ACCEPT)},
   { 39, -1, sizeof(::Protocol::C_MATCH_DECLINE)},
   { 44, -1, sizeof(::Protocol::S_CHAMPSELECT_START)},
-  { 51, -1, sizeof(::Protocol::C_MATCH_CANCEL)},
-  { 56, -1, sizeof(::Protocol::S_MATCH_CANCELED)},
-  { 61, -1, sizeof(::Protocol::C_ENTER_GAME)},
-  { 67, -1, sizeof(::Protocol::S_ENTER_GAME)},
-  { 73, -1, sizeof(::Protocol::C_CHAT)},
-  { 79, -1, sizeof(::Protocol::S_CHAT)},
+  { 51, -1, sizeof(::Protocol::C_PICK_CHAMPION)},
+  { 57, -1, sizeof(::Protocol::S_PICK_UPDATE)},
+  { 64, -1, sizeof(::Protocol::S_PICK_FAILED)},
+  { 69, -1, sizeof(::Protocol::S_GAME_START)},
+  { 76, -1, sizeof(::Protocol::C_MATCH_CANCEL)},
+  { 81, -1, sizeof(::Protocol::S_MATCH_CANCELED)},
+  { 86, -1, sizeof(::Protocol::C_ENTER_GAME)},
+  { 92, -1, sizeof(::Protocol::S_ENTER_GAME)},
+  { 98, -1, sizeof(::Protocol::C_CHAT)},
+  { 104, -1, sizeof(::Protocol::S_CHAT)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -309,6 +387,10 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_C_MATCH_ACCEPT_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_C_MATCH_DECLINE_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_S_CHAMPSELECT_START_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_C_PICK_CHAMPION_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_S_PICK_UPDATE_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_S_PICK_FAILED_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_S_GAME_START_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_C_MATCH_CANCEL_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_S_MATCH_CANCELED_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::Protocol::_C_ENTER_GAME_default_instance_),
@@ -331,12 +413,16 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "2\022.Protocol.Position\"\020\n\016C_MATCH_ACCEPT\"\021"
   "\n\017C_MATCH_DECLINE\"R\n\023S_CHAMPSELECT_START"
   "\022\017\n\007matchId\030\001 \001(\004\022*\n\014participants\030\002 \003(\0132"
-  "\024.Protocol.PlayerInfo\"\020\n\016C_MATCH_CANCEL\""
-  "\022\n\020S_MATCH_CANCELED\"#\n\014C_ENTER_GAME\022\023\n\013p"
-  "layerIndex\030\001 \001(\004\"\037\n\014S_ENTER_GAME\022\017\n\007succ"
-  "ess\030\001 \001(\010\"\025\n\006C_CHAT\022\013\n\003msg\030\001 \001(\t\"\'\n\006S_CH"
-  "AT\022\020\n\010playerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\tb\006proto"
-  "3"
+  "\024.Protocol.PlayerInfo\"%\n\017C_PICK_CHAMPION"
+  "\022\022\n\nchampionId\030\001 \001(\r\"5\n\rS_PICK_UPDATE\022\020\n"
+  "\010playerId\030\001 \001(\004\022\022\n\nchampionId\030\002 \001(\r\"\017\n\rS"
+  "_PICK_FAILED\"I\n\014S_GAME_START\022\017\n\007matchId\030"
+  "\001 \001(\004\022(\n\nfinalTeams\030\002 \003(\0132\024.Protocol.Pla"
+  "yerInfo\"\020\n\016C_MATCH_CANCEL\"\022\n\020S_MATCH_CAN"
+  "CELED\"#\n\014C_ENTER_GAME\022\023\n\013playerIndex\030\001 \001"
+  "(\004\"\037\n\014S_ENTER_GAME\022\017\n\007success\030\001 \001(\010\"\025\n\006C"
+  "_CHAT\022\013\n\003msg\030\001 \001(\t\"\'\n\006S_CHAT\022\020\n\010playerId"
+  "\030\001 \001(\004\022\013\n\003msg\030\002 \001(\tb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -344,8 +430,8 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_Protocol_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Protocol_2eproto = {
-  false, false, 721, descriptor_table_protodef_Protocol_2eproto, "Protocol.proto", 
-  &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 14,
+  false, false, 907, descriptor_table_protodef_Protocol_2eproto, "Protocol.proto", 
+  &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 18,
   schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
   file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto, file_level_service_descriptors_Protocol_2eproto,
 };
@@ -2028,6 +2114,804 @@ void S_CHAMPSELECT_START::InternalSwap(S_CHAMPSELECT_START* other) {
 
 // ===================================================================
 
+class C_PICK_CHAMPION::_Internal {
+ public:
+};
+
+C_PICK_CHAMPION::C_PICK_CHAMPION(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_PICK_CHAMPION)
+}
+C_PICK_CHAMPION::C_PICK_CHAMPION(const C_PICK_CHAMPION& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  championid_ = from.championid_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_PICK_CHAMPION)
+}
+
+void C_PICK_CHAMPION::SharedCtor() {
+championid_ = 0u;
+}
+
+C_PICK_CHAMPION::~C_PICK_CHAMPION() {
+  // @@protoc_insertion_point(destructor:Protocol.C_PICK_CHAMPION)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void C_PICK_CHAMPION::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void C_PICK_CHAMPION::ArenaDtor(void* object) {
+  C_PICK_CHAMPION* _this = reinterpret_cast< C_PICK_CHAMPION* >(object);
+  (void)_this;
+}
+void C_PICK_CHAMPION::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void C_PICK_CHAMPION::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void C_PICK_CHAMPION::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_PICK_CHAMPION)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  championid_ = 0u;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* C_PICK_CHAMPION::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint32 championId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          championid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag == 0) || ((tag & 7) == 4)) {
+          CHK_(ptr);
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* C_PICK_CHAMPION::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_PICK_CHAMPION)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint32 championId = 1;
+  if (this->championid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_championid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_PICK_CHAMPION)
+  return target;
+}
+
+size_t C_PICK_CHAMPION::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_PICK_CHAMPION)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint32 championId = 1;
+  if (this->championid() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_championid());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void C_PICK_CHAMPION::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:Protocol.C_PICK_CHAMPION)
+  GOOGLE_DCHECK_NE(&from, this);
+  const C_PICK_CHAMPION* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<C_PICK_CHAMPION>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Protocol.C_PICK_CHAMPION)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:Protocol.C_PICK_CHAMPION)
+    MergeFrom(*source);
+  }
+}
+
+void C_PICK_CHAMPION::MergeFrom(const C_PICK_CHAMPION& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_PICK_CHAMPION)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.championid() != 0) {
+    _internal_set_championid(from._internal_championid());
+  }
+}
+
+void C_PICK_CHAMPION::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:Protocol.C_PICK_CHAMPION)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void C_PICK_CHAMPION::CopyFrom(const C_PICK_CHAMPION& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_PICK_CHAMPION)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool C_PICK_CHAMPION::IsInitialized() const {
+  return true;
+}
+
+void C_PICK_CHAMPION::InternalSwap(C_PICK_CHAMPION* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(championid_, other->championid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_PICK_CHAMPION::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[8]);
+}
+
+// ===================================================================
+
+class S_PICK_UPDATE::_Internal {
+ public:
+};
+
+S_PICK_UPDATE::S_PICK_UPDATE(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_PICK_UPDATE)
+}
+S_PICK_UPDATE::S_PICK_UPDATE(const S_PICK_UPDATE& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&playerid_, &from.playerid_,
+    static_cast<size_t>(reinterpret_cast<char*>(&championid_) -
+    reinterpret_cast<char*>(&playerid_)) + sizeof(championid_));
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_PICK_UPDATE)
+}
+
+void S_PICK_UPDATE::SharedCtor() {
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&playerid_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&championid_) -
+    reinterpret_cast<char*>(&playerid_)) + sizeof(championid_));
+}
+
+S_PICK_UPDATE::~S_PICK_UPDATE() {
+  // @@protoc_insertion_point(destructor:Protocol.S_PICK_UPDATE)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void S_PICK_UPDATE::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void S_PICK_UPDATE::ArenaDtor(void* object) {
+  S_PICK_UPDATE* _this = reinterpret_cast< S_PICK_UPDATE* >(object);
+  (void)_this;
+}
+void S_PICK_UPDATE::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void S_PICK_UPDATE::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void S_PICK_UPDATE::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_PICK_UPDATE)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&playerid_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&championid_) -
+      reinterpret_cast<char*>(&playerid_)) + sizeof(championid_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* S_PICK_UPDATE::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 playerId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          playerid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 championId = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          championid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag == 0) || ((tag & 7) == 4)) {
+          CHK_(ptr);
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* S_PICK_UPDATE::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_PICK_UPDATE)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 playerId = 1;
+  if (this->playerid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(1, this->_internal_playerid(), target);
+  }
+
+  // uint32 championId = 2;
+  if (this->championid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_championid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_PICK_UPDATE)
+  return target;
+}
+
+size_t S_PICK_UPDATE::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_PICK_UPDATE)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 playerId = 1;
+  if (this->playerid() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
+        this->_internal_playerid());
+  }
+
+  // uint32 championId = 2;
+  if (this->championid() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_championid());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void S_PICK_UPDATE::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:Protocol.S_PICK_UPDATE)
+  GOOGLE_DCHECK_NE(&from, this);
+  const S_PICK_UPDATE* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<S_PICK_UPDATE>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Protocol.S_PICK_UPDATE)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:Protocol.S_PICK_UPDATE)
+    MergeFrom(*source);
+  }
+}
+
+void S_PICK_UPDATE::MergeFrom(const S_PICK_UPDATE& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_PICK_UPDATE)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.playerid() != 0) {
+    _internal_set_playerid(from._internal_playerid());
+  }
+  if (from.championid() != 0) {
+    _internal_set_championid(from._internal_championid());
+  }
+}
+
+void S_PICK_UPDATE::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:Protocol.S_PICK_UPDATE)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void S_PICK_UPDATE::CopyFrom(const S_PICK_UPDATE& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_PICK_UPDATE)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool S_PICK_UPDATE::IsInitialized() const {
+  return true;
+}
+
+void S_PICK_UPDATE::InternalSwap(S_PICK_UPDATE* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(S_PICK_UPDATE, championid_)
+      + sizeof(S_PICK_UPDATE::championid_)
+      - PROTOBUF_FIELD_OFFSET(S_PICK_UPDATE, playerid_)>(
+          reinterpret_cast<char*>(&playerid_),
+          reinterpret_cast<char*>(&other->playerid_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata S_PICK_UPDATE::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[9]);
+}
+
+// ===================================================================
+
+class S_PICK_FAILED::_Internal {
+ public:
+};
+
+S_PICK_FAILED::S_PICK_FAILED(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_PICK_FAILED)
+}
+S_PICK_FAILED::S_PICK_FAILED(const S_PICK_FAILED& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_PICK_FAILED)
+}
+
+void S_PICK_FAILED::SharedCtor() {
+}
+
+S_PICK_FAILED::~S_PICK_FAILED() {
+  // @@protoc_insertion_point(destructor:Protocol.S_PICK_FAILED)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void S_PICK_FAILED::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void S_PICK_FAILED::ArenaDtor(void* object) {
+  S_PICK_FAILED* _this = reinterpret_cast< S_PICK_FAILED* >(object);
+  (void)_this;
+}
+void S_PICK_FAILED::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void S_PICK_FAILED::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void S_PICK_FAILED::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_PICK_FAILED)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* S_PICK_FAILED::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+        if ((tag == 0) || ((tag & 7) == 4)) {
+          CHK_(ptr);
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* S_PICK_FAILED::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_PICK_FAILED)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_PICK_FAILED)
+  return target;
+}
+
+size_t S_PICK_FAILED::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_PICK_FAILED)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void S_PICK_FAILED::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:Protocol.S_PICK_FAILED)
+  GOOGLE_DCHECK_NE(&from, this);
+  const S_PICK_FAILED* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<S_PICK_FAILED>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Protocol.S_PICK_FAILED)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:Protocol.S_PICK_FAILED)
+    MergeFrom(*source);
+  }
+}
+
+void S_PICK_FAILED::MergeFrom(const S_PICK_FAILED& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_PICK_FAILED)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+}
+
+void S_PICK_FAILED::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:Protocol.S_PICK_FAILED)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void S_PICK_FAILED::CopyFrom(const S_PICK_FAILED& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_PICK_FAILED)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool S_PICK_FAILED::IsInitialized() const {
+  return true;
+}
+
+void S_PICK_FAILED::InternalSwap(S_PICK_FAILED* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata S_PICK_FAILED::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[10]);
+}
+
+// ===================================================================
+
+class S_GAME_START::_Internal {
+ public:
+};
+
+void S_GAME_START::clear_finalteams() {
+  finalteams_.Clear();
+}
+S_GAME_START::S_GAME_START(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+  finalteams_(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_GAME_START)
+}
+S_GAME_START::S_GAME_START(const S_GAME_START& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      finalteams_(from.finalteams_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  matchid_ = from.matchid_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_GAME_START)
+}
+
+void S_GAME_START::SharedCtor() {
+matchid_ = uint64_t{0u};
+}
+
+S_GAME_START::~S_GAME_START() {
+  // @@protoc_insertion_point(destructor:Protocol.S_GAME_START)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void S_GAME_START::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void S_GAME_START::ArenaDtor(void* object) {
+  S_GAME_START* _this = reinterpret_cast< S_GAME_START* >(object);
+  (void)_this;
+}
+void S_GAME_START::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void S_GAME_START::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void S_GAME_START::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_GAME_START)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  finalteams_.Clear();
+  matchid_ = uint64_t{0u};
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* S_GAME_START::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 matchId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          matchid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // repeated .Protocol.PlayerInfo finalTeams = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_finalteams(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag == 0) || ((tag & 7) == 4)) {
+          CHK_(ptr);
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* S_GAME_START::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_GAME_START)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 matchId = 1;
+  if (this->matchid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(1, this->_internal_matchid(), target);
+  }
+
+  // repeated .Protocol.PlayerInfo finalTeams = 2;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_finalteams_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(2, this->_internal_finalteams(i), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_GAME_START)
+  return target;
+}
+
+size_t S_GAME_START::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_GAME_START)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .Protocol.PlayerInfo finalTeams = 2;
+  total_size += 1UL * this->_internal_finalteams_size();
+  for (const auto& msg : this->finalteams_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // uint64 matchId = 1;
+  if (this->matchid() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
+        this->_internal_matchid());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void S_GAME_START::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:Protocol.S_GAME_START)
+  GOOGLE_DCHECK_NE(&from, this);
+  const S_GAME_START* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<S_GAME_START>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Protocol.S_GAME_START)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:Protocol.S_GAME_START)
+    MergeFrom(*source);
+  }
+}
+
+void S_GAME_START::MergeFrom(const S_GAME_START& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_GAME_START)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  finalteams_.MergeFrom(from.finalteams_);
+  if (from.matchid() != 0) {
+    _internal_set_matchid(from._internal_matchid());
+  }
+}
+
+void S_GAME_START::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:Protocol.S_GAME_START)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void S_GAME_START::CopyFrom(const S_GAME_START& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_GAME_START)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool S_GAME_START::IsInitialized() const {
+  return true;
+}
+
+void S_GAME_START::InternalSwap(S_GAME_START* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  finalteams_.InternalSwap(&other->finalteams_);
+  swap(matchid_, other->matchid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata S_GAME_START::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[11]);
+}
+
+// ===================================================================
+
 class C_MATCH_CANCEL::_Internal {
  public:
 };
@@ -2181,7 +3065,7 @@ void C_MATCH_CANCEL::InternalSwap(C_MATCH_CANCEL* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_MATCH_CANCEL::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[8]);
+      file_level_metadata_Protocol_2eproto[12]);
 }
 
 // ===================================================================
@@ -2339,7 +3223,7 @@ void S_MATCH_CANCELED::InternalSwap(S_MATCH_CANCELED* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_MATCH_CANCELED::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[9]);
+      file_level_metadata_Protocol_2eproto[13]);
 }
 
 // ===================================================================
@@ -2529,7 +3413,7 @@ void C_ENTER_GAME::InternalSwap(C_ENTER_GAME* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_ENTER_GAME::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[10]);
+      file_level_metadata_Protocol_2eproto[14]);
 }
 
 // ===================================================================
@@ -2717,7 +3601,7 @@ void S_ENTER_GAME::InternalSwap(S_ENTER_GAME* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_ENTER_GAME::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[11]);
+      file_level_metadata_Protocol_2eproto[15]);
 }
 
 // ===================================================================
@@ -2922,7 +3806,7 @@ void C_CHAT::InternalSwap(C_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_CHAT::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[12]);
+      file_level_metadata_Protocol_2eproto[16]);
 }
 
 // ===================================================================
@@ -3154,7 +4038,7 @@ void S_CHAT::InternalSwap(S_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_CHAT::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[13]);
+      file_level_metadata_Protocol_2eproto[17]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -3183,6 +4067,18 @@ template<> PROTOBUF_NOINLINE ::Protocol::C_MATCH_DECLINE* Arena::CreateMaybeMess
 }
 template<> PROTOBUF_NOINLINE ::Protocol::S_CHAMPSELECT_START* Arena::CreateMaybeMessage< ::Protocol::S_CHAMPSELECT_START >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::S_CHAMPSELECT_START >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_PICK_CHAMPION* Arena::CreateMaybeMessage< ::Protocol::C_PICK_CHAMPION >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_PICK_CHAMPION >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::S_PICK_UPDATE* Arena::CreateMaybeMessage< ::Protocol::S_PICK_UPDATE >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_PICK_UPDATE >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::S_PICK_FAILED* Arena::CreateMaybeMessage< ::Protocol::S_PICK_FAILED >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_PICK_FAILED >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::S_GAME_START* Arena::CreateMaybeMessage< ::Protocol::S_GAME_START >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_GAME_START >(arena);
 }
 template<> PROTOBUF_NOINLINE ::Protocol::C_MATCH_CANCEL* Arena::CreateMaybeMessage< ::Protocol::C_MATCH_CANCEL >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::C_MATCH_CANCEL >(arena);

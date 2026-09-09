@@ -3,6 +3,7 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "FileUtils.h"
+#include "ChampSelectSession.h"
 #include "MatchAcceptSession.h"
 #include "MatchmakingManager.h"
 #include "MmrManager.h"
@@ -164,6 +165,25 @@ bool Handle_C_MATCH_DECLINE(PacketSessionRef& session, Protocol::C_MATCH_DECLINE
 	return true;
 }
 
+bool Handle_C_PICK_CHAMPION(PacketSessionRef& session, Protocol::C_PICK_CHAMPION& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->_player == nullptr)
+		return false;
+
+	shared_ptr<ChampSelectSession> champSelectSession = gameSession->_champSelectSession.lock();
+	if (champSelectSession == nullptr)
+	{
+		LOG_WARNING(L"픽 실패 : 참여 중인 챔피언 선택이 없음 (playerId=%llu)", gameSession->_player->playerId);
+		return false;
+	}
+
+	champSelectSession->DoAsync(&ChampSelectSession::OnPick, gameSession->_player->playerId, pkt.championid());
+
+	return true;
+}
+
 bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 {
 	/*
@@ -190,17 +210,21 @@ bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
 
 bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 {
-	/*
-	std::cout << pkt.msg() << endl;
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
-	Protocol::S_CHAT chatPkt;
-	chatPkt.set_msg(pkt.msg());
-	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(chatPkt);
+	if (gameSession->_player == nullptr)
+		return false;
 
-	// GRoom.Broadcast(sendBuffer); // WRITE_LOCK
-	// GRoom.PushJob(MakeShared<BroadcastJob>(GRoom, sendBuffer));
-	GRoom->DoAsync(&Room::Broadcast, sendBuffer);
-	*/
+	// 지금은 챔피언 선택 화면에서만 채팅을 지원한다 (요청 범위). 다른 상태(로비/대기열 등)는
+	// 아직 묶여있는 Room/Broadcast 대상이 없어서 무시.
+	shared_ptr<ChampSelectSession> champSelectSession = gameSession->_champSelectSession.lock();
+	if (champSelectSession == nullptr)
+	{
+		LOG_WARNING(L"채팅 실패 : 챔피언 선택 중이 아님 (playerId=%llu)", gameSession->_player->playerId);
+		return false;
+	}
+
+	champSelectSession->DoAsync(&ChampSelectSession::OnChat, gameSession->_player->playerId, pkt.msg());
 
 	return true;
 }
