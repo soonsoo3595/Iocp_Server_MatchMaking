@@ -81,8 +81,13 @@ void Logger::Write(LogLevel level, const char* funcName, const WCHAR* format, ..
 void Logger::WriteConsole(LogLevel level, const WCHAR* line)
 {
 	::SetConsoleTextAttribute(_stdOut, GetConsoleColor(level));
-	::fputws(line, stdout);
-	::fflush(stdout);
+
+	// fputws(stdout)는 CRT 로케일 기준으로 wide->narrow 변환을 하는데, 기본 "C" 로케일에서는
+	// 한글처럼 변환 안 되는 문자를 만나면 그 지점에서 조용히 멈춰버려서 뒷부분이 통째로 안 찍힌다.
+	// WriteConsoleW는 로케일을 안 거치고 UTF-16을 콘솔에 직접 넘기므로 이 문제가 없다.
+	DWORD written = 0;
+	::WriteConsoleW(_stdOut, line, static_cast<DWORD>(::wcslen(line)), &written, nullptr);
+
 	::SetConsoleTextAttribute(_stdOut, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 }
 
