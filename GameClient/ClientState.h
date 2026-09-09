@@ -6,9 +6,12 @@
 // (여러 필드를 한 번에 묶어 바꿔야 하는 경우 등) 재검토가 필요하다.
 enum class ClientState : int32
 {
-	LOGOUT,		// 접속/로그인 전 (또는 접속이 끊긴 상태)
-	LOBBY,		// 로그인 완료, 매칭 시작 전
-	MATCHING,	// 매칭 대기열에 등록된 상태
+	LOGOUT,				// 접속/로그인 전 (또는 접속이 끊긴 상태)
+	LOBBY,				// 로그인 완료, 매칭 시작 전
+	MATCHING,			// 매칭 대기열에 등록된 상태
+	MATCH_FOUND,		// 매칭 성사됨. 수락/거절을 물어보는 중.
+	WAITING_ACCEPT_RESULT,	// 수락/거절 응답을 보냈고, 전원 결과(챔프선택 진입 or 재매칭/로비)를 기다리는 중
+	CHAMP_SELECT,		// 전원 수락 완료, 챔피언 선택 진입 (아직 픽 UI는 없음)
 };
 
 extern Atomic<ClientState> GClientState;

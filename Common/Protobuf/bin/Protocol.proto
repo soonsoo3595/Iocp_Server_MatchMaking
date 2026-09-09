@@ -26,6 +26,30 @@ message S_MATCH_QUEUED
 
 }
 
+message S_MATCH_FOUND
+{
+	uint64 matchId = 1;
+	repeated PlayerInfo myTeam = 2;
+	repeated PlayerInfo enemyTeam = 3;
+	Position myPosition = 4;
+}
+
+message C_MATCH_ACCEPT
+{
+
+}
+
+message C_MATCH_DECLINE
+{
+
+}
+
+message S_CHAMPSELECT_START
+{
+	uint64 matchId = 1;
+	repeated PlayerInfo participants = 2;
+}
+
 message C_MATCH_CANCEL
 {
 

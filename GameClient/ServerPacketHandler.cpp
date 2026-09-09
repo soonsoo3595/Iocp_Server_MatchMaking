@@ -44,6 +44,62 @@ bool Handle_S_MATCH_CANCELED(PacketSessionRef& session, Protocol::S_MATCH_CANCEL
 	return true;
 }
 
+// 표시용 포지션 이름 (GameClient.cpp에도 같은 목적의 헬퍼가 있음 - 공용 헤더로 뺄 정도는 아니라 중복 허용)
+static const char* PositionToString(Protocol::Position position)
+{
+	switch (position)
+	{
+	case Protocol::POSITION_TOP: return "TOP";
+	case Protocol::POSITION_JUG: return "JUG";
+	case Protocol::POSITION_MID: return "MID";
+	case Protocol::POSITION_BOT: return "BOT";
+	case Protocol::POSITION_SUP: return "SUP";
+	default: return "상관없음";
+	}
+}
+
+bool Handle_S_MATCH_FOUND(PacketSessionRef& session, Protocol::S_MATCH_FOUND& pkt)
+{
+	LOG_INFO(L"매칭 성사! matchId=%llu, 내 포지션=%hs", pkt.matchid(), PositionToString(pkt.myposition()));
+
+	// name()은 UTF-8 std::string이라, 콘솔이 UTF-8을 받아주는 한 narrow cout으로 그대로 출력하면 된다.
+	// (와이드 LOG_INFO의 %hs와 달리, cout은 로케일 변환 없이 바이트를 그대로 흘려보낸다)
+	cout << "\n===== 매칭 성사 =====" << endl;
+	cout << "내 팀:" << endl;
+	for (const Protocol::PlayerInfo& info : pkt.myteam())
+	{
+		cout << "  - " << info.name() << " (" << PositionToString(info.position()) << ")" << endl;
+	}
+	cout << "상대 팀:" << endl;
+	for (const Protocol::PlayerInfo& info : pkt.enemyteam())
+	{
+		cout << "  - " << info.name() << " (" << PositionToString(info.position()) << ")" << endl;
+	}
+	cout << "=====================" << endl;
+	// TODO : 챔피언 선택(ChampSelect) 단계는 아직 구현 전. 지금은 결과만 보여주고 대기.
+
+	GClientState = ClientState::MATCH_FOUND;
+
+	return true;
+}
+
+bool Handle_S_CHAMPSELECT_START(PacketSessionRef& session, Protocol::S_CHAMPSELECT_START& pkt)
+{
+	LOG_INFO(L"전원 수락 완료! 챔피언 선택으로 진입합니다. matchId=%llu", pkt.matchid());
+
+	cout << "\n===== 챔피언 선택 진입 (matchId=" << pkt.matchid() << ") =====" << endl;
+	for (const Protocol::PlayerInfo& info : pkt.participants())
+	{
+		cout << "  - " << info.name() << " (" << PositionToString(info.position()) << ")" << endl;
+	}
+	cout << "=====================================" << endl;
+	// TODO : 픽 UI/로직은 아직 구현 전.
+
+	GClientState = ClientState::CHAMP_SELECT;
+
+	return true;
+}
+
 bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 {
 	// TODO

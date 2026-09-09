@@ -56,6 +56,51 @@ public:
 	}
 };
 
+// 로그/메뉴 출력용 포지션 이름
+const char* PositionToString(Protocol::Position position)
+{
+	switch (position)
+	{
+	case Protocol::POSITION_TOP: return "TOP";
+	case Protocol::POSITION_JUG: return "JUG";
+	case Protocol::POSITION_MID: return "MID";
+	case Protocol::POSITION_BOT: return "BOT";
+	case Protocol::POSITION_SUP: return "SUP";
+	default: return "상관없음";
+	}
+}
+
+// 포지션 하나를 콘솔에서 골라 받는다. label은 "1지망"/"2지망"처럼 프롬프트에 붙일 설명.
+Protocol::Position SelectPosition(const char* label)
+{
+	while (true)
+	{
+		cout << "\n" << label << " 포지션을 선택하세요.\n"
+			"0. 상관없음\n1. TOP\n2. JUG\n3. MID\n4. BOT\n5. SUP\n선택 : ";
+
+		int32 choice = 0;
+		if (!(cin >> choice))
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			continue;
+		}
+
+		switch (choice)
+		{
+		case 0: return Protocol::POSITION_NONE;
+		case 1: return Protocol::POSITION_TOP;
+		case 2: return Protocol::POSITION_JUG;
+		case 3: return Protocol::POSITION_MID;
+		case 4: return Protocol::POSITION_BOT;
+		case 5: return Protocol::POSITION_SUP;
+		default:
+			cout << "잘못된 선택입니다." << endl;
+			break;
+		}
+	}
+}
+
 // 로비 화면 : 매칭 시작 전 (1. 매칭 시작 / 2. 로그아웃 후 게임 종료)
 void RunLobbyMenu()
 {
@@ -80,15 +125,22 @@ void RunLobbyMenu()
 			return;
 		}
 
-		// TODO : 포지션 선택 UI. 지금은 전부 "상관없음"으로 신청.
+		const Protocol::Position primary = SelectPosition("1지망");
+
+		// 1지망이 "상관없음"이면 2지망은 의미가 없으니 안 물어봄 (기획서 §7 C_MATCH_START 주석과 동일)
+		Protocol::Position secondary = Protocol::POSITION_NONE;
+		if (primary != Protocol::POSITION_NONE)
+			secondary = SelectPosition("2지망 (상관없으면 0)");
+
 		Protocol::C_MATCH_START startPkt;
-		startPkt.set_primaryposition(Protocol::POSITION_NONE);
-		startPkt.set_secondaryposition(Protocol::POSITION_NONE);
+		startPkt.set_primaryposition(primary);
+		startPkt.set_secondaryposition(secondary);
 		auto sendBuffer = ServerPacketHandler::MakeSendBuffer(startPkt);
 		GSession->Send(sendBuffer);
 
 		GClientState = ClientState::MATCHING;
-		cout << "매칭 시작을 요청했습니다." << endl;
+		cout << "매칭 시작을 요청했습니다. (1지망=" << PositionToString(primary)
+			<< ", 2지망=" << PositionToString(secondary) << ")" << endl;
 		break;
 	}
 	case 2:
@@ -131,6 +183,53 @@ void RunMatchingMenu()
 	cout << "매칭을 취소했습니다." << endl;
 }
 
+// 매칭 성사 화면 : 수락할지 거절할지 물어본다.
+void RunMatchFoundMenu()
+{
+	cout << "\n1. 수락\n2. 거절\n선택 : ";
+
+	int32 choice = 0;
+	if (!(cin >> choice))
+	{
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		return;
+	}
+
+	if (GSession == nullptr)
+	{
+		cout << "서버와의 연결이 끊겼습니다." << endl;
+		return;
+	}
+
+	switch (choice)
+	{
+	case 1:
+	{
+		Protocol::C_MATCH_ACCEPT acceptPkt;
+		auto sendBuffer = ServerPacketHandler::MakeSendBuffer(acceptPkt);
+		GSession->Send(sendBuffer);
+
+		GClientState = ClientState::WAITING_ACCEPT_RESULT;
+		cout << "수락했습니다. 다른 플레이어들의 응답을 기다리는 중..." << endl;
+		break;
+	}
+	case 2:
+	{
+		Protocol::C_MATCH_DECLINE declinePkt;
+		auto sendBuffer = ServerPacketHandler::MakeSendBuffer(declinePkt);
+		GSession->Send(sendBuffer);
+
+		GClientState = ClientState::WAITING_ACCEPT_RESULT;
+		cout << "거절했습니다." << endl;
+		break;
+	}
+	default:
+		cout << "잘못된 선택입니다." << endl;
+		break;
+	}
+}
+
 void RunConsoleMenuLoop()
 {
 	while (true)
@@ -147,6 +246,18 @@ void RunConsoleMenuLoop()
 			break;
 		case ClientState::MATCHING:
 			RunMatchingMenu();
+			break;
+		case ClientState::MATCH_FOUND:
+			RunMatchFoundMenu();
+			break;
+		case ClientState::WAITING_ACCEPT_RESULT:
+			// 서버가 S_CHAMPSELECT_START/S_MATCH_QUEUED/S_MATCH_CANCELED 중 하나를 보내줄
+			// 때까지는 딱히 할 게 없다 - 그 핸들러들이 알아서 상태를 바꿔준다.
+			this_thread::sleep_for(100ms);
+			break;
+		case ClientState::CHAMP_SELECT:
+			// 챔피언 선택 UI는 아직 구현 전. 참가자 목록은 Handle_S_CHAMPSELECT_START에서 이미 출력함.
+			this_thread::sleep_for(100ms);
 			break;
 		}
 	}

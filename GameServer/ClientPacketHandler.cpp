@@ -3,6 +3,7 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "FileUtils.h"
+#include "MatchAcceptSession.h"
 #include "MatchmakingManager.h"
 #include "MmrManager.h"
 #include "Player.h"
@@ -89,9 +90,11 @@ bool Handle_C_MATCH_START(PacketSessionRef& session, Protocol::C_MATCH_START& pk
 	MatchmakingTicket ticket;
 	ticket.playerId = gameSession->_player->playerId;
 	ticket.mmr = gameSession->_player->mmr;
+	ticket.name = gameSession->_player->name;
 	ticket.primaryPosition = pkt.primaryposition();
 	ticket.secondaryPosition = pkt.secondaryposition();
 	ticket.queuedAt = ::GetTickCount64();
+	ticket.session = gameSession;
 
 	GMatchmakingManager->DoAsync(&MatchmakingManager::AddTicket, ticket);
 
@@ -119,6 +122,44 @@ bool Handle_C_MATCH_CANCEL(PacketSessionRef& session, Protocol::C_MATCH_CANCEL& 
 	Protocol::S_MATCH_CANCELED canceledPkt;
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(canceledPkt);
 	session->Send(sendBuffer);
+
+	return true;
+}
+
+bool Handle_C_MATCH_ACCEPT(PacketSessionRef& session, Protocol::C_MATCH_ACCEPT& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->_player == nullptr)
+		return false;
+
+	shared_ptr<MatchAcceptSession> acceptSession = gameSession->_matchAcceptSession.lock();
+	if (acceptSession == nullptr)
+	{
+		LOG_WARNING(L"매치 수락 실패 : 대기 중인 매치가 없음 (playerId=%llu)", gameSession->_player->playerId);
+		return false;
+	}
+
+	acceptSession->DoAsync(&MatchAcceptSession::OnAccept, gameSession->_player->playerId);
+
+	return true;
+}
+
+bool Handle_C_MATCH_DECLINE(PacketSessionRef& session, Protocol::C_MATCH_DECLINE& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->_player == nullptr)
+		return false;
+
+	shared_ptr<MatchAcceptSession> acceptSession = gameSession->_matchAcceptSession.lock();
+	if (acceptSession == nullptr)
+	{
+		LOG_WARNING(L"매치 거절 실패 : 대기 중인 매치가 없음 (playerId=%llu)", gameSession->_player->playerId);
+		return false;
+	}
+
+	acceptSession->DoAsync(&MatchAcceptSession::OnDecline, gameSession->_player->playerId);
 
 	return true;
 }
