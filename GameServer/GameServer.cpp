@@ -8,7 +8,6 @@
 #include <tchar.h>
 #include "Protocol.pb.h"
 #include "Job.h"
-#include "Room.h"
 #include "MatchmakingManager.h"
 #include "Player.h"
 #include "DBConnectionPool.h"
@@ -43,7 +42,6 @@ int main()
 {
 	GLogger->Init(LogOutput::Console, LogLevel::Log);
 
-	InitRoom();
 	InitMatchmakingManager();
 
 	ClientPacketHandler::Init();

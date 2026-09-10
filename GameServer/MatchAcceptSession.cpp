@@ -57,7 +57,7 @@ void MatchAcceptSession::Start()
 				continue; // 대기 중 접속 끊김 - 이탈 처리는 기획서 §5.4에서 확장 과제로 남겨둔 부분
 
 			// 이 GameSession으로 들어오는 C_MATCH_ACCEPT/C_MATCH_DECLINE이 이 세션으로
-			// 연결되도록 등록해둔다 (Room을 GameSession::_room에 등록하던 것과 같은 패턴).
+			// 연결되도록 GameSession에 등록해둔다.
 			session->_matchAcceptSession = self;
 
 			Protocol::S_MATCH_FOUND foundPkt;

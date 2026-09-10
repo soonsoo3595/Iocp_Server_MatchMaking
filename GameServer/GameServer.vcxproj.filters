@@ -48,9 +48,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>GameContents</Filter>
     </ClCompile>
-    <ClCompile Include="Room.cpp">
-      <Filter>GameContents</Filter>
-    </ClCompile>
     <ClCompile Include="MatchmakingManager.cpp">
       <Filter>GameContents</Filter>
     </ClCompile>
@@ -87,9 +84,6 @@
       <Filter>Protocol</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>GameContents</Filter>
-    </ClInclude>
-    <ClInclude Include="Room.h">
       <Filter>GameContents</Filter>
     </ClInclude>
     <ClInclude Include="MatchmakingManager.h">

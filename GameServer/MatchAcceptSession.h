@@ -4,7 +4,7 @@
 
 // 매치 성사(S_MATCH_FOUND) 통보 ~ 전원 수락(챔피언 선택 진입) 또는 재매칭까지의
 // "수락 대기" 단계를 전담하는 세션. 매치 하나당 하나씩 만들어지는 임시 객체라
-// GRoom/GMatchmakingManager처럼 전역 싱글톤이 아니다 (FinalizeMatch에서 그때그때 생성).
+// GMatchmakingManager처럼 전역 싱글톤이 아니다 (FinalizeMatch에서 그때그때 생성).
 //
 // JobQueue를 상속해서, 10명의 수락/거절 패킷과 타임아웃 Job이 겹쳐 들어와도
 // 순차 실행이 보장된다 - 반드시 DoAsync/DoTimer를 통해서만 멤버 함수를 호출할 것.

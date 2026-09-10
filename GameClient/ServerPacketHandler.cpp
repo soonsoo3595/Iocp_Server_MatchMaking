@@ -135,12 +135,6 @@ bool Handle_S_GAME_START(PacketSessionRef& session, Protocol::S_GAME_START& pkt)
 	return true;
 }
 
-bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
-{
-	// TODO
-	return true;
-}
-
 bool Handle_S_CHAT(PacketSessionRef& session, Protocol::S_CHAT& pkt)
 {
 	cout << "[채팅] playerId=" << pkt.playerid() << " : " << pkt.msg() << endl;

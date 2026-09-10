@@ -6,7 +6,7 @@ C++ IOCP 강의를 통해 만든 서버 엔진(`ServerCore`)을 기반으로, �
 
 ## 폴더 구조
 - `ServerCore/` — 클라이언트·서버 공통 엔진 모듈 (스레드, 메모리, 네트워크(IOCP), 패킷, DB/ORM 등)
-- `GameServer/` — 게임 서버 메인 프로젝트 (`Room`/`Player`/`GameSession`/`ClientPacketHandler` 골격 포함)
+- `GameServer/` — 게임 서버 메인 프로젝트 (`Player`/`GameSession`/`ClientPacketHandler`, 매치메이킹(`MatchmakingManager`/`MatchAcceptSession`/`ChampSelectSession`) 등)
 - `GameClient/` — 테스트/개발용 클라이언트 (구 DummyClient)
 - `Common/` — Protobuf(`.proto`), Procedure Generator(XML→SP 코드) 관련 스크립트·정의
 - `Tools/` — `PacketGenerator`, `ProcedureGenerator` (Python + Jinja2 코드 생성기)
@@ -25,7 +25,7 @@ C++ IOCP 강의를 통해 만든 서버 엔진(`ServerCore`)을 기반으로, �
 ## 시작 상태
 `GameDB.xml`은 빈 스키마(`<GameDB></GameDB>`)로 시작한다. 테이블/프로시저를 추가하려면 XML에 `<Table>`/`<Procedure>`를 선언하고 빌드하면 `DBSynchronizer`와 `ProcedureGenerator`가 자동으로 DB 스키마 동기화 + `SP::` 코드 생성을 처리한다.
 
-`GameServer.cpp`의 `main()`은 DB 연결 + 스키마 동기화 + `ClientPacketHandler::Init()` + IOCP 서비스 부트스트랩만 남긴 최소 골격이다. `Room`/`Player`/`GameSession`/`ClientPacketHandler`(로그인/입장/채팅 핸들러)는 강의 골격이 참고용으로 남아있으니, 실제 게임 로직으로 교체/확장하면 된다.
+`GameServer.cpp`의 `main()`은 `ClientPacketHandler::Init()` + 매치메이킹 매니저 초기화 + IOCP 서비스 부트스트랩만 남긴 최소 골격이다. 강의 데모 골격(`Room`, DB Gold 예제 등)은 정리했고, 현재는 로그인 → 매치메이킹 → 챔피언 선택(픽) 흐름이 구현되어 있다.
 
 ## 알려진 이슈 / 기술 부채 (강의 레포에서 이관, 여전히 유효)
 - `ServerService`↔`Listener` 순환 참조 위험 미해소
@@ -37,7 +37,8 @@ C++ IOCP 강의를 통해 만든 서버 엔진(`ServerCore`)을 기반으로, �
 - `DBSynchronizer`의 메타 쿼리 클래스(`GetDBTables` 등)가 아직 수동 작성 상태
 - `.proto` 필드명이 카멜케이스라 접근자 이름이 어색함
 - 패킷 ID가 정적으로 매겨져 있어 리버스 엔지니어링에 취약함
-- `Room::Enter`/`Leave`/`Broadcast`가 `public`으로 열려 있음
+- 매치메이킹 대기 중/수락 중/픽 중 접속 끊김 처리가 미비 (weak_ptr lock 실패 시 통보만 스킵, 티켓/팀원 정리·알림 없음)
+- 챔피언 선택(픽) 단계에 타임아웃이 없음
 
 ## 커밋 규칙
 커밋 메시지는 `태그 | 커밋 내용 요약` 형식으로 작성한다.

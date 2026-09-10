@@ -30,7 +30,7 @@ public:
 
 	// Meyer's Singleton. 함수 지역 정적 변수는 "최초로 이 함수가 호출되는 시점"에
 	// 단 한 번, 스레드-세이프하게 생성된다(C++11 magic statics). GMemory처럼
-	// 전역 객체 생성 시점에 즉시 new하는 방식은, 다른 전역 객체(Room/GameSessionManager 등)의
+	// 전역 객체 생성 시점에 즉시 new하는 방식은, 다른 전역 객체(GameSessionManager 등)의
 	// 생성자가 먼저 실행되면서 아직 만들어지지 않은 Memory를 참조해버리는
 	// "정적 초기화 순서 문제"에 취약하다. 이 방식은 그 문제 자체를 원천 차단한다.
 	static Memory& GetInstance();

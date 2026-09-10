@@ -65,6 +65,7 @@ private:
 extern shared_ptr<MatchmakingManager> GMatchmakingManager;
 
 // main()에서 명시적으로 호출해서 GMatchmakingManager를 만든다.
-// (GRoom과 동일한 이유 - JobQueue를 상속받는 전역 객체는 shared_ptr로 관리돼야
-// DoAsync/DoTimer 내부의 shared_from_this()가 정상 동작한다)
+// JobQueue를 상속받는 전역 객체는 shared_ptr로 관리돼야 DoAsync/DoTimer 내부의
+// shared_from_this()가 정상 동작하므로, 전역 변수 선언과 동시에 생성하지 않고
+// main()에서 명시적으로 make_shared 한다.
 void InitMatchmakingManager();

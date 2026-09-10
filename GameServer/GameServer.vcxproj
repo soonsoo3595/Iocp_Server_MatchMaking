@@ -191,7 +191,6 @@ CALL $(SolutionDir)Common\Procedures\GenProcs.bat</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ClientPacketHandler.cpp" />
-    <ClCompile Include="Room.cpp" />
     <ClCompile Include="MatchmakingManager.cpp" />
     <ClCompile Include="MatchAcceptSession.cpp" />
     <ClCompile Include="ChampSelectSession.cpp" />
@@ -212,7 +211,6 @@ CALL $(SolutionDir)Common\Procedures\GenProcs.bat</Command>
     <ClInclude Include="Player.h" />
     <ClInclude Include="Protocol.pb.h" />
     <ClInclude Include="ClientPacketHandler.h" />
-    <ClInclude Include="Room.h" />
     <ClInclude Include="MatchmakingManager.h" />
     <ClInclude Include="MatchAcceptSession.h" />
     <ClInclude Include="ChampSelectSession.h" />

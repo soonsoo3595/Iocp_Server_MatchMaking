@@ -8,7 +8,6 @@
 #include "MatchmakingManager.h"
 #include "MmrManager.h"
 #include "Player.h"
-#include "Room.h"
 #include "StringUtils.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
@@ -184,30 +183,6 @@ bool Handle_C_PICK_CHAMPION(PacketSessionRef& session, Protocol::C_PICK_CHAMPION
 	return true;
 }
 
-bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
-{
-	/*
-	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-
-	uint64 index = pkt.playerindex();
-	// TODO : Validation
-
-	gameSession->_currentPlayer = gameSession->_players[index]; // READ_ONLY?
-	gameSession->_room = GRoom;
-	// GRoom.Enter(player); // WRITE_LOCK
-	// GRoom.PushJob(MakeShared<EnterJob>(GRoom, player));	// 예약
-	GRoom->DoAsync(&Room::Enter, gameSession->_currentPlayer);
-
-	Protocol::S_ENTER_GAME enterGamePkt;
-	enterGamePkt.set_success(true);
-	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
-	if (GameSessionRef ownerSession = gameSession->_currentPlayer->ownerSession.lock())
-		ownerSession->Send(sendBuffer);
-
-	*/
-	return true;
-}
-
 bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
@@ -215,8 +190,8 @@ bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt)
 	if (gameSession->_player == nullptr)
 		return false;
 
-	// 지금은 챔피언 선택 화면에서만 채팅을 지원한다 (요청 범위). 다른 상태(로비/대기열 등)는
-	// 아직 묶여있는 Room/Broadcast 대상이 없어서 무시.
+	// 지금은 챔피언 선택 화면에서만 채팅을 지원한다 (요청 범위).
+	// 다른 상태(로비/대기열 등)는 브로드캐스트 대상 그룹이 없어서 무시.
 	shared_ptr<ChampSelectSession> champSelectSession = gameSession->_champSelectSession.lock();
 	if (champSelectSession == nullptr)
 	{

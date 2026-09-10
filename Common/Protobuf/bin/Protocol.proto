@@ -82,16 +82,6 @@ message S_MATCH_CANCELED
 
 }
 
-message C_ENTER_GAME
-{
-	uint64 playerIndex = 1;
-}
-
-message S_ENTER_GAME
-{
-	bool success = 1;
-}
-
 message C_CHAT
 {
 	string msg = 1;
