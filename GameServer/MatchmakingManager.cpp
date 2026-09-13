@@ -154,6 +154,8 @@ void MatchmakingManager::RemoveTicket(uint64 playerId, uint32 mmr)
 		// 순서 유지 안 해도 되므로 마지막 원소와 바꿔치기 후 pop (O(1) 제거)
 		bucket[i] = bucket.back();
 		bucket.pop_back();
+
+		LOG_INFO(L"매칭 취소/제거 : playerId=%llu, mmr=%u", playerId, mmr);
 		return;
 	}
 }
@@ -227,15 +229,24 @@ void MatchmakingManager::Tick()
 		if (TryFormMatch(candidates, teamA, teamB) == false)
 			continue; // 포지션 조합이 안 맞으면 미성사, 다음 tick에 재시도
 
+		auto clearQueuedFlag = [](const MatchedPlayer& player)
+		{
+			GameSessionRef session = player.ticket.session.lock();
+			if (session != nullptr)
+				session->_isQueued = false;
+		};
+
 		for (const MatchedPlayer& player : teamA)
 		{
 			RemoveTicket(player.ticket.playerId, player.ticket.mmr);
 			alreadyMatched.insert(player.ticket.playerId);
+			clearQueuedFlag(player);
 		}
 		for (const MatchedPlayer& player : teamB)
 		{
 			RemoveTicket(player.ticket.playerId, player.ticket.mmr);
 			alreadyMatched.insert(player.ticket.playerId);
+			clearQueuedFlag(player);
 		}
 
 		FinalizeMatch(std::move(teamA), std::move(teamB));

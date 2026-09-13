@@ -96,6 +96,7 @@ bool Handle_C_MATCH_START(PacketSessionRef& session, Protocol::C_MATCH_START& pk
 	ticket.session = gameSession;
 
 	GMatchmakingManager->DoAsync(&MatchmakingManager::AddTicket, ticket);
+	gameSession->_isQueued = true;
 
 	Protocol::S_MATCH_QUEUED queuedPkt;
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(queuedPkt);
@@ -115,6 +116,7 @@ bool Handle_C_MATCH_CANCEL(PacketSessionRef& session, Protocol::C_MATCH_CANCEL& 
 	}
 
 	GMatchmakingManager->DoAsync(&MatchmakingManager::RemoveTicket, gameSession->_player->playerId, gameSession->_player->mmr);
+	gameSession->_isQueued = false;
 
 	LOG_INFO(L"매칭 취소 : playerId=%llu", gameSession->_player->playerId);
 

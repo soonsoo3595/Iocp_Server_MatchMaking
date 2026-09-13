@@ -55,8 +55,6 @@ int main()
 	if (workerThreadCount < 2)
 		workerThreadCount = 2;
 
-	LOG_INFO(L"워커 스레드 수 : %d", workerThreadCount - 1);
-
 	// 메인 스레드도 아래에서 DoWorkerJob을 직접 도니까, 그만큼 하나 빼고 Launch.
 	for (int32 i = 0; i < workerThreadCount - 1; i++)
 	{

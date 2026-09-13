@@ -32,7 +32,6 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 
 bool Handle_S_MATCH_QUEUED(PacketSessionRef& session, Protocol::S_MATCH_QUEUED& pkt)
 {
-	LOG_INFO(L"매칭 대기열에 등록되었습니다. 매칭을 기다리는 중...");
 	GClientState = ClientState::MATCHING;
 	return true;
 }

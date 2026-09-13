@@ -155,6 +155,7 @@ void MatchAcceptSession::Resolve(bool allAccepted)
 			{
 				// 원래 티켓(mmr/포지션/queuedAt 그대로) 재등록 -> 기다린 시간도 유지됨
 				GMatchmakingManager->DoAsync(&MatchmakingManager::AddTicket, player.ticket);
+				session->_isQueued = true;
 
 				Protocol::S_MATCH_QUEUED queuedPkt;
 				auto sendBuffer = ClientPacketHandler::MakeSendBuffer(queuedPkt);
