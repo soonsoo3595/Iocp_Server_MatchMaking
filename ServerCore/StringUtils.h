@@ -17,4 +17,8 @@ public:
 	// - 개행/탭 등 제어 문자가 섞여 있으면 실패
 	// * name은 호출 전에 Trim된 상태라고 가정한다.
 	static bool IsValidNickname(const string& name, size_t maxByteLen = 24);
+
+	// UTF-8 std::string -> UTF-16 wstring(String) 변환.
+	// 로그(Logger는 wide 전용)나 XML 파싱처럼, UTF-8 데이터를 wide로 다뤄야 할 때 쓴다.
+	static String Utf8ToWide(const string& str);
 };

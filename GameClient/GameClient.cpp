@@ -4,7 +4,7 @@
 #include "Session.h"
 #include "ServerPacketHandler.h"
 #include "ClientState.h"
-#include "FileUtils.h"
+#include "StringUtils.h"
 #include <cstdlib>
 #include <limits>
 
@@ -26,9 +26,8 @@ public:
 	{
 		// 게임 서버로 로그인하는 상황
 		// GLoginName은 UTF-8 바이트라 %hs(현재 로케일/ANSI 기준 변환)로 찍으면 한글이 깨진다.
-		// FileUtils::Convert로 UTF-8 -> UTF-16 변환 후 %s로 찍어야 한다.
-		LOG_INFO(L"로그인 시도 : 닉네임 = %s", FileUtils::Convert(GLoginName).c_str());
-
+		// StringUtils::Utf8ToWide로 UTF-8 -> UTF-16 변환 후 %s로 찍어야 한다.
+		LOG_INFO(L"로그인 시도 : 닉네임 = %s", StringUtils::Utf8ToWide(GLoginName).c_str());
 		GSession = GetPacketSessionRef();
 
 		Protocol::C_LOGIN pkt;
@@ -231,26 +230,6 @@ void RunMatchFoundMenu()
 	}
 }
 
-// 콘솔에서 한 줄(채팅 등)을 UTF-8 std::string으로 읽어온다.
-// wcin/getline은 CRT 텍스트 모드를 거치면서 콘솔의 멀티바이트 한글 입력을 깨뜨리므로,
-// ReadConsoleW를 직접 호출해서 CRT 로케일 변환을 아예 거치지 않게 한다.
-string ReadLineAsUtf8()
-{
-	HANDLE hStdIn = ::GetStdHandle(STD_INPUT_HANDLE);
-
-	WCHAR buffer[256];
-	DWORD readCount = 0;
-	::ReadConsoleW(hStdIn, buffer, 256, &readCount, nullptr);
-
-	wstring wideLine(buffer, readCount);
-	while (!wideLine.empty() && (wideLine.back() == L'\n' || wideLine.back() == L'\r'))
-		wideLine.pop_back();
-
-	string line;
-	WSTR_TO_UTF8(wideLine, line);
-	return line;
-}
-
 // 챔피언 선택 화면 : 픽 또는 채팅 중 하나를 고른다.
 void RunChampSelectMenu()
 {
@@ -299,7 +278,8 @@ void RunChampSelectMenu()
 		cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 메뉴 번호 뒤에 남은 개행 비우기
 
 		cout << "채팅 메시지를 입력하세요 : ";
-		const string msg = ReadLineAsUtf8();
+		string msg;
+		std::getline(cin, msg);
 
 		Protocol::C_CHAT chatPkt;
 		chatPkt.set_msg(msg);
@@ -355,27 +335,16 @@ void RunConsoleMenuLoop()
 
 int main()
 {
+	// 콘솔 입력 코드페이지를 UTF-8로 바꾼다. 출력(WriteConsoleW 기반 로그, CP949 리터럴)에는
+	// 영향이 없고 입력 경로만 바뀌므로, cin으로 받은 바이트가 곧바로 유효한 UTF-8이 된다.
+	::SetConsoleCP(CP_UTF8);
+
 	GLogger->Init(LogOutput::Console, LogLevel::Log);
 
 	ServerPacketHandler::Init();
 
 	cout << "닉네임을 입력하세요: ";
-
-	// wcin/getline은 CRT 텍스트 모드를 거치면서 콘솔의 멀티바이트 한글 입력을 깨뜨린다.
-	// Logger::WriteConsole이 fputws 대신 WriteConsoleW를 직접 쓰는 것과 같은 이유로,
-	// 입력도 ReadConsoleW를 직접 호출해서 CRT 로케일 변환을 아예 거치지 않게 한다.
-	HANDLE hStdIn = ::GetStdHandle(STD_INPUT_HANDLE);
-
-	WCHAR buffer[256];
-	DWORD readCount = 0;
-	::ReadConsoleW(hStdIn, buffer, 256, &readCount, nullptr);
-
-	wstring wideName(buffer, readCount);
-	while (!wideName.empty() && (wideName.back() == L'\n' || wideName.back() == L'\r'))
-		wideName.pop_back();
-
-	// Protobuf의 string은 항상 UTF-8이어야 하므로 UTF-8로 변환한다.
-	WSTR_TO_UTF8(wideName, GLoginName);
+	std::getline(cin, GLoginName);
 
 	this_thread::sleep_for(1s);
 

@@ -35,3 +35,18 @@ bool StringUtils::IsValidNickname(const string& name, size_t maxByteLen)
 
 	return true;
 }
+
+String StringUtils::Utf8ToWide(const string& str)
+{
+	const int32 srcLen = static_cast<int32>(str.size());
+
+	String ret;
+	if (srcLen == 0)
+		return ret;
+
+	const int32 retLen = ::MultiByteToWideChar(CP_UTF8, 0, str.c_str(), srcLen, NULL, 0);
+	ret.resize(retLen);
+	::MultiByteToWideChar(CP_UTF8, 0, str.c_str(), srcLen, &ret[0], retLen);
+
+	return ret;
+}

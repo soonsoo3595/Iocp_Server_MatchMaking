@@ -2,7 +2,7 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "ClientPacketHandler.h"
-#include "FileUtils.h"
+#include "StringUtils.h"
 #include "Player.h"
 
 void GameSession::OnConnected()
@@ -17,8 +17,8 @@ void GameSession::OnDisconnected()
 	if (_player)
 	{
 		// _player->name은 UTF-8 바이트라 %hs(현재 로케일/ANSI 기준 변환)로 찍으면 한글이 깨진다.
-		// FileUtils::Convert로 UTF-8 -> UTF-16 변환 후 %s로 찍어야 한다.
-		LOG_INFO(L"Player logged out. playerId=%llu, name=%s", _player->playerId, FileUtils::Convert(_player->name).c_str());
+		// StringUtils::Utf8ToWide로 UTF-8 -> UTF-16 변환 후 %s로 찍어야 한다.
+		LOG_INFO(L"Player logged out. playerId=%llu, name=%s", _player->playerId, StringUtils::Utf8ToWide(_player->name).c_str());
 		GSessionManager.ReleaseName(_player->name);
 	}
 }

@@ -24,19 +24,3 @@ Vector<BYTE> FileUtils::ReadFile(const WCHAR* path)
 
 	return ret;
 }
-
-// utf-16으로 바꾸기 위해
-String FileUtils::Convert(string str)
-{
-	const int32 srcLen = static_cast<int32>(str.size());
-
-	String ret;
-	if (srcLen == 0)
-		return ret;
-
-	const int32 retLen = ::MultiByteToWideChar(CP_UTF8, 0, reinterpret_cast<char*>(&str[0]), srcLen, NULL, 0);
-	ret.resize(retLen);
-	::MultiByteToWideChar(CP_UTF8, 0, reinterpret_cast<char*>(&str[0]), srcLen, &ret[0], retLen);
-
-	return ret;
-}

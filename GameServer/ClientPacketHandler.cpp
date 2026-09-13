@@ -2,7 +2,6 @@
 #include "ClientPacketHandler.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
-#include "FileUtils.h"
 #include "ChampSelectSession.h"
 #include "MatchAcceptSession.h"
 #include "MatchmakingManager.h"
@@ -33,7 +32,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 	if (gameSession->_player != nullptr)
 	{
 		LOG_WARNING(L"로그인 실패 : 이미 로그인된 세션 (playerId=%llu, 닉네임=%s)",
-			gameSession->_player->playerId, FileUtils::Convert(gameSession->_player->name).c_str());
+			gameSession->_player->playerId, StringUtils::Utf8ToWide(gameSession->_player->name).c_str());
 
 		loginPkt.set_success(false);
 		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(loginPkt);
@@ -45,7 +44,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 
 	if (StringUtils::IsValidNickname(name) == false || GSessionManager.TryReserveName(name) == false)
 	{
-		LOG_WARNING(L"로그인 실패 : 닉네임 = %s", FileUtils::Convert(name).c_str());
+		LOG_WARNING(L"로그인 실패 : 닉네임 = %s", StringUtils::Utf8ToWide(name).c_str());
 
 		loginPkt.set_success(false);
 		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(loginPkt);
@@ -63,7 +62,7 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 
 	gameSession->_player = playerRef;
 
-	LOG_INFO(L"로그인 성공 : playerId = %llu, 닉네임 = %s, mmr=%u", playerRef->playerId, FileUtils::Convert(name).c_str(), playerRef->mmr);
+	LOG_INFO(L"로그인 성공 : playerId = %llu, 닉네임 = %s, mmr=%u", playerRef->playerId, StringUtils::Utf8ToWide(name).c_str(), playerRef->mmr);
 
 	loginPkt.set_success(true);
 	Protocol::Player* playerProto = loginPkt.mutable_player();
