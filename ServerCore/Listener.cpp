@@ -164,7 +164,5 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 
 	LOG_INFO(L"Client Connected! %s:%d", session->GetAddress().GetIpAddress().c_str(), session->GetAddress().GetPort());
 
-	// TODO
-
 	RegisterAccept(acceptEvent);
 }

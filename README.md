@@ -26,7 +26,7 @@ Docs/         엔진 각 모듈 학습 정리 + 매치메이킹 기획서
 - **IOCP 완료 포트 기반 비동기 I/O** — 소수의 워커 스레드로 다수의 소켓을 처리하는 이벤트 기반 네트워크 계층
 - **커스텀 메모리 풀** — 크기 구간별 락프리(SLIST) 프리 리스트, 타입 전용 오브젝트 풀
 - **직접 구현한 Reader-Writer 스핀락 + 런타임 데드락 탐지기** — 락 순서 그래프의 사이클을 실행 중에 감지
-- **JobQueue 기반 액터 모델** — 락 없이 안전하게 게임 로직(Room 등)을 처리하는 스케줄링 시스템
+- **JobQueue 기반 액터 모델** — 락 없이 안전하게 게임 로직(매치메이킹, 챔피언 선택 등)을 처리하는 스케줄링 시스템
 - **Protobuf 기반 패킷 파이프라인** — `.proto` 스키마에서 직렬화 코드와 패킷 디스패치 테이블을 자동 생성
 
 ## 문서
@@ -44,12 +44,13 @@ Docs/         엔진 각 모듈 학습 정리 + 매치메이킹 기획서
 | [Docs/Protobuf_Review.md](Docs/Protobuf_Review.md) | proto3 문법, 코드 생성 파이프라인 |
 | [Docs/PacketFlow_Review.md](Docs/PacketFlow_Review.md) | 소켓 도착 바이트가 게임 로직 실행까지 이어지는 전체 흐름 |
 | [Docs/Matchmaking_Design.md](Docs/Matchmaking_Design.md) | 매치메이킹~챔피언 선택 시스템 기획서 |
+| [Docs/GameFlow_Review.md](Docs/GameFlow_Review.md) | 로그인~매칭~수락~챔피언 선택~게임 시작까지 실제 구현된 전체 흐름 |
 
 ## 진행 상황
 
 - [x] `ServerCore` 엔진 리뷰 및 개선 (캡슐화, 널 포인터 방어, 순환 참조 해소, 락 점유 시간 단축 등)
 - [x] 매치메이킹 시스템 기획서 작성
-- [ ] 매치메이킹 시스템 구현 (진행 예정)
+- [x] 매치메이킹 시스템 구현 (로그인 → 매칭 → 수락/거절 → 챔피언 선택 → 게임 시작)
 
 ## 알려진 이슈 / 기술 부채
 
@@ -57,4 +58,4 @@ Docs/         엔진 각 모듈 학습 정리 + 매치메이킹 기획서
 - `Service::_sessions`와 `GameSessionManager::_sessions` 세션 추적 이중화
 - DB 호출이 전부 동기(synchronous)라 잡 큐/워커 스레드와 분리되어 있지 않음
 - 패킷 ID가 정적으로 매겨져 있어 리버스 엔지니어링에 취약함
-- `Room::Enter`/`Leave`/`Broadcast`가 `public`으로 열려 있음
+- 매치메이킹 대기/수락/픽 중 접속 끊김 처리 미비, 챔피언 선택에 타임아웃 없음

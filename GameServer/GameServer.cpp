@@ -10,11 +10,6 @@
 #include "Job.h"
 #include "MatchmakingManager.h"
 #include "Player.h"
-#include "DBConnectionPool.h"
-#include "DBBind.h"
-#include "XMLParser.h"
-#include "DBSynchronizer.h"
-#include "GenProcedures.h"
 
 enum
 {
@@ -54,7 +49,16 @@ int main()
 
 	ASSERT_CRASH(service->Start());
 
-	for (int32 i = 0; i < 5; i++)
+	// 워커 스레드 수를 서버의 논리 코어 수에 맞춘다.
+	// hardware_concurrency()가 0을 돌려줄 수도 있어(가상화 등) 최소 2는 보장.
+	int32 workerThreadCount = static_cast<int32>(std::thread::hardware_concurrency());
+	if (workerThreadCount < 2)
+		workerThreadCount = 2;
+
+	LOG_INFO(L"워커 스레드 수 : %d", workerThreadCount - 1);
+
+	// 메인 스레드도 아래에서 DoWorkerJob을 직접 도니까, 그만큼 하나 빼고 Launch.
+	for (int32 i = 0; i < workerThreadCount - 1; i++)
 	{
 		GThreadManager->Launch([&service]()
 			{

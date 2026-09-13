@@ -6,6 +6,22 @@
 #define NAMESPACE_END			}
 
 /*---------------
+	  Encoding
+---------------*/
+
+// wstring(UTF-16) -> UTF-8 std::string 변환.
+// protobuf의 string 필드는 항상 UTF-8이어야 하는데 콘솔/Win32 API는 wstring을
+// 쓰는 경우가 많아서, 그 사이를 메우는 변환을 매크로로 뺀다.
+#define WSTR_TO_UTF8(wstr, outStr)												\
+{																				\
+	const int32 _wstrToUtf8Len = ::WideCharToMultiByte(CP_UTF8, 0, (wstr).c_str(),	\
+		static_cast<int32>((wstr).size()), NULL, 0, NULL, NULL);					\
+	(outStr).resize(_wstrToUtf8Len);											\
+	::WideCharToMultiByte(CP_UTF8, 0, (wstr).c_str(),							\
+		static_cast<int32>((wstr).size()), &(outStr)[0], _wstrToUtf8Len, NULL, NULL);	\
+}
+
+/*---------------
 	  Lock
 ---------------*/
 

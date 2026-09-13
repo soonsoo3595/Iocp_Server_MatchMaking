@@ -4,6 +4,7 @@
 #include "Session.h"
 #include "ServerPacketHandler.h"
 #include "ClientState.h"
+#include "FileUtils.h"
 #include <cstdlib>
 #include <limits>
 
@@ -24,7 +25,9 @@ public:
 	virtual void OnConnected() override
 	{
 		// 게임 서버로 로그인하는 상황
-		LOG_INFO(L"로그인 시도 : 닉네임 = %hs", GLoginName.c_str());
+		// GLoginName은 UTF-8 바이트라 %hs(현재 로케일/ANSI 기준 변환)로 찍으면 한글이 깨진다.
+		// FileUtils::Convert로 UTF-8 -> UTF-16 변환 후 %s로 찍어야 한다.
+		LOG_INFO(L"로그인 시도 : 닉네임 = %s", FileUtils::Convert(GLoginName).c_str());
 
 		GSession = GetPacketSessionRef();
 
@@ -45,12 +48,10 @@ public:
 
 	virtual void OnSend(int32 len) override
 	{
-		//cout << "OnSend Len = " << len << endl;
 	}
 
 	virtual void OnDisconnected() override
 	{
-		//cout << "Disconnected" << endl;
 		GSession = nullptr;
 		GClientState = ClientState::LOGOUT;
 	}
@@ -230,19 +231,23 @@ void RunMatchFoundMenu()
 	}
 }
 
-// 콘솔에서 한 줄(채팅 등)을 UTF-8로 안전하게 읽어온다.
-// (콘솔 입력은 시스템 로캘 기준으로 들어오는데, protobuf string은 항상 UTF-8이어야 해서
-// 닉네임 입력 때와 마찬가지로 와이드로 받아서 변환한다 - GameClient.cpp의 main() 참고)
+// 콘솔에서 한 줄(채팅 등)을 UTF-8 std::string으로 읽어온다.
+// wcin/getline은 CRT 텍스트 모드를 거치면서 콘솔의 멀티바이트 한글 입력을 깨뜨리므로,
+// ReadConsoleW를 직접 호출해서 CRT 로케일 변환을 아예 거치지 않게 한다.
 string ReadLineAsUtf8()
 {
-	wstring wideLine;
-	std::getline(wcin, wideLine);
+	HANDLE hStdIn = ::GetStdHandle(STD_INPUT_HANDLE);
 
-	const int32 utf8Len = ::WideCharToMultiByte(CP_UTF8, 0, wideLine.c_str(), static_cast<int32>(wideLine.size()), NULL, 0, NULL, NULL);
+	WCHAR buffer[256];
+	DWORD readCount = 0;
+	::ReadConsoleW(hStdIn, buffer, 256, &readCount, nullptr);
+
+	wstring wideLine(buffer, readCount);
+	while (!wideLine.empty() && (wideLine.back() == L'\n' || wideLine.back() == L'\r'))
+		wideLine.pop_back();
+
 	string line;
-	line.resize(utf8Len);
-	::WideCharToMultiByte(CP_UTF8, 0, wideLine.c_str(), static_cast<int32>(wideLine.size()), &line[0], utf8Len, NULL, NULL);
-
+	WSTR_TO_UTF8(wideLine, line);
 	return line;
 }
 
@@ -315,8 +320,7 @@ void RunConsoleMenuLoop()
 		switch (GClientState.load())
 		{
 		case ClientState::LOGOUT:
-			// 아직 접속/로그인이 안 끝난 상태 -> 콘솔 입력을 받지 않고 대기.
-			// (여기서 cin으로 뭔가 물어보면 연결되기도 전에 메뉴가 떠버림)
+			// 아직 접속/로그인이 안 끝난 상태 -> 콘솔 입력을 받지 않고 대기
 			this_thread::sleep_for(100ms);
 			break;
 		case ClientState::LOBBY:
@@ -357,14 +361,21 @@ int main()
 
 	cout << "닉네임을 입력하세요: ";
 
-	// 콘솔 입력은 시스템 로캘(한국어 Windows면 CP949)로 들어오는데,
-	// Protobuf의 string은 항상 UTF-8이어야 하므로 와이드 문자로 받아서 변환한다.
-	wstring wideName;
-	std::getline(wcin, wideName);
+	// wcin/getline은 CRT 텍스트 모드를 거치면서 콘솔의 멀티바이트 한글 입력을 깨뜨린다.
+	// Logger::WriteConsole이 fputws 대신 WriteConsoleW를 직접 쓰는 것과 같은 이유로,
+	// 입력도 ReadConsoleW를 직접 호출해서 CRT 로케일 변환을 아예 거치지 않게 한다.
+	HANDLE hStdIn = ::GetStdHandle(STD_INPUT_HANDLE);
 
-	const int32 utf8Len = ::WideCharToMultiByte(CP_UTF8, 0, wideName.c_str(), static_cast<int32>(wideName.size()), NULL, 0, NULL, NULL);
-	GLoginName.resize(utf8Len);
-	::WideCharToMultiByte(CP_UTF8, 0, wideName.c_str(), static_cast<int32>(wideName.size()), &GLoginName[0], utf8Len, NULL, NULL);
+	WCHAR buffer[256];
+	DWORD readCount = 0;
+	::ReadConsoleW(hStdIn, buffer, 256, &readCount, nullptr);
+
+	wstring wideName(buffer, readCount);
+	while (!wideName.empty() && (wideName.back() == L'\n' || wideName.back() == L'\r'))
+		wideName.pop_back();
+
+	// Protobuf의 string은 항상 UTF-8이어야 하므로 UTF-8로 변환한다.
+	WSTR_TO_UTF8(wideName, GLoginName);
 
 	this_thread::sleep_for(1s);
 
@@ -376,16 +387,14 @@ int main()
 
 	ASSERT_CRASH(service->Start());
 
-	for (int32 i = 0; i < 2; i++)
+	// 워커 스레드는 하나만
+	GThreadManager->Launch([=]()
 	{
-		GThreadManager->Launch([=]()
-			{
-				while (true)
-				{
-					service->Dispatch();
-				}
-			});
-	}
+		while (true)
+		{
+			service->Dispatch();
+		}
+	});
 
 	cout << "서버에 연결 중입니다..." << endl;
 
