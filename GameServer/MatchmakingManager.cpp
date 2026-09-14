@@ -7,6 +7,27 @@
 #include <functional>
 #include <utility>
 
+bool MatchmakingTicket::TryCreate(uint64 playerId, uint32 mmr, const string& name,
+	Protocol::Position primaryPosition, Protocol::Position secondaryPosition,
+	uint64 queuedAt, weak_ptr<GameSession> session, OUT MatchmakingTicket& out)
+{
+	if (Protocol::Position_IsValid(primaryPosition) == false ||
+		Protocol::Position_IsValid(secondaryPosition) == false)
+	{
+		return false;
+	}
+
+	out.playerId = playerId;
+	out.mmr = mmr;
+	out.name = name;
+	out.primaryPosition = primaryPosition;
+	out.secondaryPosition = secondaryPosition;
+	out.queuedAt = queuedAt;
+	out.session = session;
+
+	return true;
+}
+
 shared_ptr<MatchmakingManager> GMatchmakingManager = nullptr;
 
 void InitMatchmakingManager()

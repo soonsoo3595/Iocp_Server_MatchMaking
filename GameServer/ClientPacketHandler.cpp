@@ -87,13 +87,19 @@ bool Handle_C_MATCH_START(PacketSessionRef& session, Protocol::C_MATCH_START& pk
 	}
 
 	MatchmakingTicket ticket;
-	ticket.playerId = gameSession->_player->playerId;
-	ticket.mmr = gameSession->_player->mmr;
-	ticket.name = gameSession->_player->name;
-	ticket.primaryPosition = pkt.primaryposition();
-	ticket.secondaryPosition = pkt.secondaryposition();
-	ticket.queuedAt = ::GetTickCount64();
-	ticket.session = gameSession;
+	if (MatchmakingTicket::TryCreate(
+			gameSession->_player->playerId,
+			gameSession->_player->mmr,
+			gameSession->_player->name,
+			pkt.primaryposition(),
+			pkt.secondaryposition(),
+			::GetTickCount64(),
+			gameSession,
+			ticket) == false)
+	{
+		LOG_WARNING(L"매칭 신청 실패 : 잘못된 포지션 값 (playerId=%llu)", gameSession->_player->playerId);
+		return false;
+	}
 
 	GMatchmakingManager->DoAsync(&MatchmakingManager::AddTicket, ticket);
 	gameSession->_isQueued = true;

@@ -7,6 +7,7 @@
 #include "StringUtils.h"
 #include <cstdlib>
 #include <limits>
+#include <conio.h>
 
 // 콘솔에서 입력받은 로그인 닉네임 (텍스트 기반 테스트용)
 string GLoginName;
@@ -163,8 +164,25 @@ void RunMatchingMenu()
 {
 	cout << "\n매칭 대기 중입니다. 취소하려면 c 를 입력하세요 : ";
 
+	// cin에서 바로 블로킹하지 않고, 입력이 들어올 때까지 짧은 간격으로
+	// GClientState 변화를 확인한다 -> 매칭 성사를 최대 50ms 지연으로 즉시 반영.
+	while (true)
+	{
+		if (GClientState.load() != ClientState::MATCHING)
+			return; // 매칭 성사 등으로 상태가 바뀜 -> 이 메뉴는 그만두고 다음 루프에서 새 메뉴로
+
+		if (_kbhit())
+			break; // 사용자가 입력을 시작함 -> 이제 실제로 읽는다
+
+		this_thread::sleep_for(50ms);
+	}
+
 	string input;
 	cin >> input;
+
+	// 입력을 받는 그 짧은 순간에도 상태가 바뀌었을 수 있으니 한 번 더 확인
+	if (GClientState.load() != ClientState::MATCHING)
+		return;
 
 	if (input != "c" && input != "C")
 	{

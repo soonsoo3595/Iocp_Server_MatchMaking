@@ -15,6 +15,13 @@ struct MatchmakingTicket
 	// 매치 성사 시 S_MATCH_FOUND를 보낼 대상. 약한 참조라 대기 중 접속이 끊겨도
 	// Ticket이 GameSession의 수명을 붙들고 있지 않는다 (lock() 실패하면 그냥 스킵).
 	weak_ptr<GameSession> session;
+
+	// primaryPosition/secondaryPosition은 클라이언트 패킷(C_MATCH_START)에서 그대로 들어오는 값이라,
+	// protobuf enum이 정의 범위 밖의 값도 허용한다는 점을 이용해 조작될 수 있다. 그래서 값을 그냥
+	// 대입하지 않고 반드시 이 함수를 통해 검증까지 마친 뒤에만 티켓을 만들 수 있게 한다.
+	static bool TryCreate(uint64 playerId, uint32 mmr, const string& name,
+		Protocol::Position primaryPosition, Protocol::Position secondaryPosition,
+		uint64 queuedAt, weak_ptr<GameSession> session, OUT MatchmakingTicket& out);
 };
 
 // 매치 하나에 배정된 한 명 (원래 티켓 + 이번 매치에서 맡을 포지션).
