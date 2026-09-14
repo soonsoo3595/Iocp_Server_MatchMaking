@@ -27,6 +27,20 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 
 	GClientState = ClientState::LOBBY;
 
+	// 매칭 테스트 전용 경로 : --auto-match로 실행됐으면 로비 메뉴 조작 없이
+	// 곧바로 매칭 대기열에 등록한다 (포지션은 전부 "상관없음").
+	if (GAutoMatch)
+	{
+		Protocol::C_MATCH_START startPkt;
+		startPkt.set_primaryposition(Protocol::POSITION_NONE);
+		startPkt.set_secondaryposition(Protocol::POSITION_NONE);
+		auto sendBuffer = ServerPacketHandler::MakeSendBuffer(startPkt);
+		session->Send(sendBuffer);
+
+		GClientState = ClientState::MATCHING;
+		cout << "[--auto-match] 매칭 시작을 자동으로 요청했습니다." << endl;
+	}
+
 	return true;
 }
 

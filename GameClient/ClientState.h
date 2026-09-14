@@ -22,3 +22,8 @@ extern Atomic<ClientState> GClientState;
 // 패킷을 보낼 수 있어야 해서 전역으로 하나 들고 있는다.
 // (콘솔 클라이언트라 접속이 1개뿐이라는 전제 하에 단순화한 것 — 세션이 여러 개면 이 방식은 안 통함)
 extern PacketSessionRef GSession;
+
+// 커맨드라인에 --auto-match를 주면, 로그인 성공 직후 로비 메뉴 조작 없이 곧바로
+// 매칭 대기열에 등록한다. 매칭 테스트할 때 클라이언트를 여러 개 띄우고 일일이
+// 닉네임 입력 + 메뉴 선택을 반복하지 않아도 되도록 하기 위한 테스트 전용 스위치.
+extern bool GAutoMatch;

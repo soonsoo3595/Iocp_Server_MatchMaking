@@ -227,18 +227,39 @@ void MatchmakingManager::Tick()
 	// 이번 tick 안에서 이미 다른 매치에 편성된 사람은 다시 후보로 뽑히면 안 된다.
 	HashSet<uint64> alreadyMatched;
 
-	for (const MatchmakingTicket& seed : allTickets)
+	for (const MatchmakingTicket& ticket : allTickets)
 	{
-		if (alreadyMatched.find(seed.playerId) != alreadyMatched.end())
+		if (alreadyMatched.find(ticket.playerId) != alreadyMatched.end())
 			continue;
 
+		// OnDisconnected가 DoAsync로 RemoveTicket을 예약하는 것과 이 Tick 사이에 경합이
+		// 생기면, 이미 끊긴 세션의 티켓이 아주 짧은 순간 버킷에 남아있을 수 있다.
+		// seed 자체가 그런 죽은 티켓이면 후보 시드로 쓰지 말고 여기서 정리한다.
+		if (ticket.session.expired())
+		{
+			RemoveTicket(ticket.playerId, ticket.mmr);
+			continue;
+		}
+
 		Vector<MatchmakingTicket> candidates;
-		CollectCandidates(seed.mmr, MMR_MATCH_RANGE, candidates);
+		CollectCandidates(ticket.mmr, MMR_MATCH_RANGE, candidates);
 
 		candidates.erase(
-			std::remove_if(candidates.begin(), candidates.end(), [&alreadyMatched](const MatchmakingTicket& t)
+			std::remove_if(candidates.begin(), candidates.end(), [this, &alreadyMatched](const MatchmakingTicket& t)
 				{
-					return alreadyMatched.find(t.playerId) != alreadyMatched.end();
+					if (alreadyMatched.find(t.playerId) != alreadyMatched.end())
+						return true;
+
+					// 후보들도 마찬가지로 죽은 티켓이면 걸러내고 버킷에서 정리한다.
+					// 이걸 안 하면 죽은 티켓이 팀에 배정됐다가, 수락 대기(15초)가
+					// 끝까지 가서야 무산되는 낭비가 생긴다.
+					if (t.session.expired())
+					{
+						RemoveTicket(t.playerId, t.mmr);
+						return true;
+					}
+
+					return false;
 				}),
 			candidates.end());
 

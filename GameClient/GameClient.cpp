@@ -14,6 +14,7 @@ string GLoginName;
 
 PacketSessionRef GSession = nullptr;
 Atomic<ClientState> GClientState = ClientState::LOGOUT;
+bool GAutoMatch = false;
 
 class ServerSession : public PacketSession
 {
@@ -351,7 +352,7 @@ void RunConsoleMenuLoop()
 	}
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	// 콘솔 입력 코드페이지를 UTF-8로 바꾼다. 출력(WriteConsoleW 기반 로그, CP949 리터럴)에는
 	// 영향이 없고 입력 경로만 바뀌므로, cin으로 받은 바이트가 곧바로 유효한 UTF-8이 된다.
@@ -361,8 +362,26 @@ int main()
 
 	ServerPacketHandler::Init();
 
-	cout << "닉네임을 입력하세요: ";
-	std::getline(cin, GLoginName);
+	// 매칭 테스트용 커맨드라인 인자 : 닉네임을 인자로 주면 콘솔 입력을 건너뛰고,
+	// --auto-match를 같이 주면 로그인 직후 자동으로 매칭 대기열에 등록한다.
+	// (예: GameClient.exe test1 --auto-match)
+	string cliNickname;
+	for (int32 i = 1; i < argc; i++)
+	{
+		const string arg = argv[i];
+		if (arg == "--auto-match")
+			GAutoMatch = true;
+		else
+			cliNickname = arg;
+	}
+
+	if (cliNickname.empty() == false)
+		GLoginName = cliNickname;
+	else
+	{
+		cout << "닉네임을 입력하세요: ";
+		std::getline(cin, GLoginName);
+	}
 
 	this_thread::sleep_for(1s);
 
